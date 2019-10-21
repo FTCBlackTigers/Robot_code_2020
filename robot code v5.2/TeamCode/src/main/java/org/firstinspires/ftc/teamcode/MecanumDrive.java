@@ -7,11 +7,13 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.controller.Controller;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-class MecanumDrive {
+class MecanumDrive extends SubSystem {
 
     public MecanumDrive(){}
 
@@ -94,11 +96,11 @@ class MecanumDrive {
         }
     }
 
-    public Motion joystickToMotion(Gamepad gamePad, double currentAngle){
+    public Motion joystickToMotion(Controller gamePad, double currentAngle){
         final double JOYSTICK_THRESHOLD = 0.2;
-        double leftX = gamePad.left_stick_x;
-        double leftY = -gamePad.left_stick_y;
-        double rightX = gamePad.right_stick_x;
+        double leftX = gamePad.leftStickX.getValue();
+        double leftY = gamePad.leftStickY.getValue();
+        double rightX = gamePad.rightStickX.getValue();
 
         leftX = Math.abs(leftX) < JOYSTICK_THRESHOLD ? 0 : leftX;
         leftY = Math.abs(leftY) < JOYSTICK_THRESHOLD ? 0 : leftY;
@@ -109,7 +111,7 @@ class MecanumDrive {
         double thetaD = Math.atan2(leftX, leftY);
         double radCurrentAngle = Math.toRadians(currentAngle);
         //driving by driver's view
-        thetaD += gamePad.right_trigger>JOYSTICK_THRESHOLD ? radCurrentAngle : 0;
+        thetaD += gamePad.rightTrigger.getValue()>JOYSTICK_THRESHOLD ? radCurrentAngle : 0;
         while (thetaD > Math.PI)  thetaD -=  Math.PI * 2;
         while (thetaD <= -Math.PI) thetaD +=  Math.PI * 2;
 
@@ -182,7 +184,7 @@ class MecanumDrive {
         gyro.init(hardwareMap);
     }
 
-    public void teleopMotion(Gamepad driver){
+    public void teleopMotion(Controller driver, Controller operator){
         Motion motion = joystickToMotion(driver, gyro.getAngle());
         Wheels wheels = motionToWheels(motion);
 
@@ -191,6 +193,10 @@ class MecanumDrive {
         this.backLeftDrive.setPower(wheels.getBackLeft());
         this.backRightDrive.setPower(wheels.getBackRight());
     }
+
+
+    //--------------------------------------------------------------------------
+    //AUTO functions
 
     public void driveByEncoder(double speed, double distCm, DriveDirection direction, double timeoutS) {
         int newFrontLeftTarget = frontLeftDrive.getCurrentPosition();
@@ -250,12 +256,6 @@ class MecanumDrive {
         backLeftDrive.setPower(Math.abs(speed));
         backRightDrive.setPower(Math.abs(speed));
 
-        // keep looping while we are still active, and there is time left, and both motors are running.
-        // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
-        // its target position, the motion will stop.  This is "safer" in the event that the robot will
-        // always end the motion as soon as possible.
-        // However, if you require that BOTH motors have finished their moves before the robot continues
-        // onto the next step, use (isBusy() || isBusy()) in the loop test.
         while ((opMode.getRuntime() < timeToStop) && (((LinearOpMode)opMode).opModeIsActive()) &&
                 (frontLeftDrive.isBusy() && frontRightDrive.isBusy() && backLeftDrive.isBusy() && backRightDrive.isBusy())) {
             opMode.telemetry.addData("front left: " ,newFrontLeftTarget + " , " + frontLeftDrive.getCurrentPosition());
@@ -366,25 +366,4 @@ class MecanumDrive {
     public void turnByGyroRelative(double degrees, double timeS) {
         turnByGyroAbsolut(this.gyro.getAngle() + degrees, timeS);
     }
-
-    /*public void autonumousDrive(double distane, double driveAngle, double endAngle){
-        frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        this.drivePID.reset(distane,0);
-        this.turnPID.reset(endAngle, gyro.getAngle());
-
-        while(((LinearOpMode)this.opMode).opModeIsActive() &&
-                (!drivePID.onTarget() || !turnPID.onTarget())){
-            //Motion motion = new Motion()
-            //Wheels wheels = motionToWheels()
-        }
-    }*/
 }
