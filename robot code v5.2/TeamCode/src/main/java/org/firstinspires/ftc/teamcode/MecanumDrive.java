@@ -23,11 +23,11 @@ class MecanumDrive extends SubSystem {
 
     public class Motion{
         // Robot speed [-1, 1].
-        public final double vD;
+        public  double vD;
         // Robot angle while moving [0, 2pi].
-        public final double thetaD;
+        public  double thetaD;
         // Speed for changing direction [-1, 1].
-        public final double vTheta;
+        public  double vTheta;
 
         /**
          * Sets the motion to the given values.
@@ -185,9 +185,27 @@ class MecanumDrive extends SubSystem {
     }
 
     public void teleopMotion(Controller driver, Controller operator){
-        Motion motion = joystickToMotion(driver, gyro.getAngle());
-        Wheels wheels = motionToWheels(motion);
+        Motion motion = new Motion(1 , 0 , driver.rightStickX.getValue());
+        if(driver.dpadDown.isPressed()){
+            motion.thetaD =  180;
+        }
+        else if(driver.dpadUp.isPressed()) {
+            motion.thetaD = 0;
+        }
+        else if(driver.dpadLeft.isPressed()) {
+            motion.thetaD =  -90;
+        }
+        else if(driver.dpadRight.isPressed()) {
+            motion.thetaD =  90;
+        }
+        else{
+            motion = joystickToMotion(driver, gyro.getAngle());
+        }
+        if (driver.leftTrigger.isPressed()){
+            motion.vD *= 0.5 ;
+        }
 
+        Wheels wheels = motionToWheels(motion);
         this.frontLeftDrive.setPower(wheels.getFrontLeft());
         this.frontRightDrive.setPower(wheels.getFrontRight());
         this.backLeftDrive.setPower(wheels.getBackLeft());
