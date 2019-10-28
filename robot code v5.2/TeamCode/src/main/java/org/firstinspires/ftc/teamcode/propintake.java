@@ -48,7 +48,7 @@ public class propintake extends OpMode {
     private Servo servoLeft = null;
     private Servo servoRight = null;
     private double power = 0.5;
-    private double upPos = 0.9;
+    private double upPos = 0.7;
     private double downPos = 0.0;
 
     @Override
@@ -57,8 +57,8 @@ public class propintake extends OpMode {
         motor = hardwareMap.get(DcMotor.class, "Motor");
         servoLeft = hardwareMap.get(Servo.class, "ServoLeft");
         servoRight = hardwareMap.get(Servo.class, "ServoRight");
-        servoLeft.setDirection(Servo.Direction.FORWARD);
-        servoRight.setDirection(Servo.Direction.REVERSE);
+        servoLeft.setDirection(Servo.Direction.REVERSE);
+        servoRight.setDirection(Servo.Direction.FORWARD);
     }
 
     /*

@@ -171,10 +171,10 @@ class MecanumDrive extends SubSystem {
         backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -187,22 +187,23 @@ class MecanumDrive extends SubSystem {
     public void teleopMotion(Controller driver, Controller operator){
         Motion motion = new Motion(1 , 0 , driver.rightStickX.getValue());
         if(driver.dpadDown.isPressed()){
-            motion.thetaD =  180;
+            motion.thetaD =  Math.toRadians(180);
         }
         else if(driver.dpadUp.isPressed()) {
             motion.thetaD = 0;
         }
         else if(driver.dpadLeft.isPressed()) {
-            motion.thetaD =  -90;
+            motion.thetaD =  Math.toRadians(-90);
         }
         else if(driver.dpadRight.isPressed()) {
-            motion.thetaD =  90;
+            motion.thetaD =  Math.toRadians(90);
         }
         else{
             motion = joystickToMotion(driver, gyro.getAngle());
         }
         if (driver.leftTrigger.isPressed()){
-            motion.vD *= 0.5 ;
+            motion.vD *= 0.5;
+            motion.vTheta *= 0.5;
         }
 
         Wheels wheels = motionToWheels(motion);

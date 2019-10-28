@@ -33,8 +33,6 @@ public class Intake extends SubSystem {
 
         liftRamp();
         closeGate();
-
-
     }
 
     @Override
@@ -46,7 +44,7 @@ public class Intake extends SubSystem {
         else if(driver.rightBumper.isPressed()){
             collectStone();
         }
-        if(driver.rightBumper.onRealese()){
+        if(driver.rightBumper.onRealese() || driver.leftBumper.onRealese()){
             getReadyToCollect();
         }
         if(driver.b.onClick()){
@@ -61,9 +59,8 @@ public class Intake extends SubSystem {
         if(operator.y.onClick()){
             closeGate();
         }
-
-
     }
+
     public void collectStone(){
         intake.setPower(power);
     }
@@ -86,6 +83,7 @@ public class Intake extends SubSystem {
         gateServo.setPosition(closePosGate);
     }
     public void getReadyToCollect(){
+        intake.setPower(0);
         //TODO: MAKE THE METHOD
     }
 
