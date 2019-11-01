@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.robot_systems;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -25,11 +25,9 @@ public class FoundationMove extends SubSystem {
         if(driver.x.onClick()) {
             down();
         }
-
     }
     public void up() {
         foundServo.setPosition(upPos);
-
     }
     public void down() {
         foundServo.setPosition(downPos);

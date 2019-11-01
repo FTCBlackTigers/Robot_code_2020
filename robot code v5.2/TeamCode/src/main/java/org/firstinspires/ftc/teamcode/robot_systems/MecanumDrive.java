@@ -1,19 +1,20 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.robot_systems;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.utils.BT_Gyro;
+import org.firstinspires.ftc.teamcode.utils.TurnPIDController;
 import org.firstinspires.ftc.teamcode.controller.Controller;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-class MecanumDrive extends SubSystem {
+public class MecanumDrive extends SubSystem {
 
     public MecanumDrive(){}
 
@@ -139,9 +140,6 @@ class MecanumDrive extends SubSystem {
 
     private BT_Gyro gyro = new BT_Gyro();
     private TurnPIDController turnPID = null;
-
-
-    private OpMode opMode;
 
     //TODO: check the numbers
     private static final double COUNTS_PER_MOTOR_REV = 28 ;

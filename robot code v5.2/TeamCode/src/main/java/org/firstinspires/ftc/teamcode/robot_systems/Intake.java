@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.robot_systems;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.controller.Controller;
 
 public class Intake extends SubSystem {
-    DcMotor intake;
+    DcMotor intakeMotor;
     Servo rightServo;
     Servo leftServo;
     Servo gateServo;
@@ -22,7 +22,7 @@ public class Intake extends SubSystem {
 
     @Override
     public void init(HardwareMap hardwareMap, OpMode opMode) {
-        intake= hardwareMap.get(DcMotor.class , "intakeMotor");
+        intakeMotor = hardwareMap.get(DcMotor.class , "intakeMotor");
         leftServo= hardwareMap.get(Servo.class , "leftServo");
         rightServo= hardwareMap.get(Servo.class , "rightServo");
         gateServo= hardwareMap.get(Servo.class, "gateServo");
@@ -62,10 +62,10 @@ public class Intake extends SubSystem {
     }
 
     public void collectStone(){
-        intake.setPower(power);
+        intakeMotor.setPower(power);
     }
     public void reversIntake(){
-        intake.setPower(-power);
+        intakeMotor.setPower(-power);
     }
     public void liftRamp(){
         leftServo.setPosition(upPosRamp);
@@ -83,7 +83,7 @@ public class Intake extends SubSystem {
         gateServo.setPosition(closePosGate);
     }
     public void getReadyToCollect(){
-        intake.setPower(0);
+        intakeMotor.setPower(0);
         //TODO: MAKE THE METHOD
     }
 

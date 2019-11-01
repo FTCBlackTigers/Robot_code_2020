@@ -1,10 +1,12 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.prototypes_and_tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.controller.Controller;
+import org.firstinspires.ftc.teamcode.robot_systems.Intake;
+
 @TeleOp(name = "TestSystem", group = "teleop")
 public class TestSystem extends OpMode {
     Intake intake = new Intake();
@@ -13,7 +15,6 @@ public class TestSystem extends OpMode {
     Controller oparetor = new Controller();
     @Override
     public void init() {
-
         intake.init(hardwareMap, this);
     }
 

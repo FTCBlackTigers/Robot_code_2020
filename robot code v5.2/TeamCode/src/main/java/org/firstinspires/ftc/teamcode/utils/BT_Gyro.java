@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.utils;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
@@ -21,7 +21,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
  */
 public class BT_Gyro {
     // The IMU sensor object
-    BNO055IMU imu;
+    private BNO055IMU imu;
 
     public void init(HardwareMap hardwareMap) {
         // Set up the parameters with which we will use our IMU. Note that integration
