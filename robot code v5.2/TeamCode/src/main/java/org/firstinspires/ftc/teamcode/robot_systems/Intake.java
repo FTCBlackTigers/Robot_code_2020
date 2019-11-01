@@ -8,12 +8,25 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.controller.Controller;
 
 public class Intake extends SubSystem {
+    public enum RampAngle{
+        ANGLE_UP(0) , ANGLE_DOWN(1);
+        private double angle;
+        //TODO: find integer "tickPerDegree"
+        private double tickPerDegree = 0;
+        private RampAngle (double angle){
+            this.angle = angle;
+        }
+
+        public int getAngleInTicks() {
+            return (int) (angle*tickPerDegree);
+        }
+    }
     DcMotor intakeMotor;
-    Servo rightServo;
-    Servo leftServo;
+    DcMotor rampAngle;
     Servo gateServo;
     //TODO: ADD TOUCH SENSOR
 
+    private final double rampPower=0.5;
     private final double power=0.5;
     private final double upPosRamp=1;
     private final double downPosRamp=0;
@@ -22,21 +35,21 @@ public class Intake extends SubSystem {
 
     @Override
     public void init(HardwareMap hardwareMap, OpMode opMode) {
+        rampAngle = hardwareMap.get(DcMotor.class ,"rampAngle");
         intakeMotor = hardwareMap.get(DcMotor.class , "intakeMotor");
-        leftServo= hardwareMap.get(Servo.class , "leftServo");
-        rightServo= hardwareMap.get(Servo.class , "rightServo");
         gateServo= hardwareMap.get(Servo.class, "gateServo");
         this.opMode= opMode;
-        leftServo.setDirection(Servo.Direction.FORWARD);
-        rightServo.setDirection(Servo.Direction.FORWARD);
         gateServo.setDirection(Servo.Direction.FORWARD);
-
-        liftRamp();
         closeGate();
+        rampAngle.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     @Override
     public void teleopMotion(Controller driver, Controller operator) {
+        if (!rampAngle.isBusy()){
+            rampAngle.setPower(0);
+            rampAngle.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
 
         if(driver.leftBumper.isPressed()){
             reversIntake();
@@ -48,10 +61,10 @@ public class Intake extends SubSystem {
             getReadyToCollect();
         }
         if(driver.b.onClick()){
-            liftRamp();
+            moveRamp(RampAngle.ANGLE_UP);
         }
         if(driver.a.onClick()){
-            pullDownRamp();
+            moveRamp(RampAngle.ANGLE_DOWN);
         }
         if(operator.a.onClick()){
             openGate();
@@ -67,18 +80,14 @@ public class Intake extends SubSystem {
     public void reversIntake(){
         intakeMotor.setPower(-power);
     }
-    public void liftRamp(){
-        leftServo.setPosition(upPosRamp);
-        rightServo.setPosition(upPosRamp);
-    }
-    public void pullDownRamp(){
-        leftServo.setPosition(downPosRamp);
-        rightServo.setPosition(downPosRamp);
-    }
     public void openGate(){
         gateServo.setPosition(openPosGate);
     }
-
+    public void moveRamp(RampAngle target) {
+        rampAngle.setTargetPosition(target.getAngleInTicks());
+        rampAngle.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rampAngle.setPower(-Math.abs(rampPower));
+    }
     public void closeGate() {
         gateServo.setPosition(closePosGate);
     }
