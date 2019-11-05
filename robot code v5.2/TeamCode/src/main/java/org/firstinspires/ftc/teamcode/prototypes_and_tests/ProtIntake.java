@@ -43,21 +43,17 @@ import com.qualcomm.robotcore.util.Range;
 public class ProtIntake extends OpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor motor = null;
-    private Servo servoLeft = null;
-    private Servo servoRight = null;
+    private DcMotor motorIntake = null;
+    private DcMotor motorRamp = null;
     private double power = 0.5;
-    private double upPos = 0.7;
-    private double downPos = 0.0;
+
+
 
     @Override
     public void init() {
         telemetry.addData("Status", "Initialized");
-        motor = hardwareMap.get(DcMotor.class, "Motor");
-        servoLeft = hardwareMap.get(Servo.class, "ServoLeft");
-        servoRight = hardwareMap.get(Servo.class, "ServoRight");
-        servoLeft.setDirection(Servo.Direction.REVERSE);
-        servoRight.setDirection(Servo.Direction.FORWARD);
+
+        motorRamp = hardwareMap.get(DcMotor.class, "MotorRamp");
     }
 
     /*
@@ -73,34 +69,29 @@ public class ProtIntake extends OpMode {
      * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#loop()
      */
     @Override
-    public void start() {
-        runtime.reset();
+    public void init_loop() {
     }
 
     /*
      * This method will be called repeatedly in a loop
      * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#loop()
      */
+    boolean dUp;
     boolean dUpPrev;
+    boolean dDown;
     boolean dDownPrev;
+
     @Override
     public void loop() {
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        boolean dUp=gamepad1.dpad_up;
-        boolean dDown=gamepad1.dpad_down;
-        if (gamepad1.right_trigger != 0) {
-            motor.setPower(power);
-            if (dUp&&!dUpPrev) {
-                    power = power + 0.1;
-                    power = Range.clip(power, 0.1, 1);
-                } else if (dDown&&!dDownPrev) {
-                    power = power - 0.1;
-                    power = Range.clip(power, 0.1, 1);
-            }
+        motorRamp.setPower(-gamepad1.left_stick_y);
 
+        if (gamepad1.left_stick_y == 0){
+            motorRamp.setPower(0);
         }
+
         if (gamepad1.left_trigger != 0) {
-            motor.setPower(-power);
+            motorIntake.setPower(power);
             if (dUp&&!dUpPrev) {
                 power = power + 0.1;
                 power = Range.clip(power, 0.1, 1);
@@ -110,29 +101,15 @@ public class ProtIntake extends OpMode {
                 power = Range.clip(power, 0.1, 1);
             }
         }
-        else {
-            motor.setPower(0);
-        }
-        if (gamepad1.y) {
-            servoRight.setPosition(upPos);
-            servoLeft.setPosition(upPos);
-            if (dUp&&!dUpPrev) {
-                upPos = upPos + 0.1;
-                upPos = Range.clip(upPos, 0.1, 1);
-            } else if (dDown&&!dDownPrev) {
-                upPos = upPos - 0.1;
-                upPos = Range.clip(upPos, 0.1, 1);
-
+            if (gamepad1.left_trigger ==0){
+                motorIntake.setPower(0);
             }
-        } else if (gamepad1.a) {
-            servoRight.setPosition(downPos);
-            servoLeft.setPosition(downPos);
-        }
-        telemetry.addData("power", power);
-        telemetry.addData("position", upPos);
-
-        dUpPrev = dUp;
-        dDownPrev = dDown;
+            else {
+                motorIntake.setPower(0);
+            }
+        telemetry.addData("Encoder", motorRamp.getCurrentPosition());
     }
+
+
 }
 
