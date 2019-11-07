@@ -54,6 +54,7 @@ public class ProtIntake extends OpMode {
         telemetry.addData("Status", "Initialized");
 
         motorRamp = hardwareMap.get(DcMotor.class, "MotorRamp");
+        motorIntake = hardwareMap.get(DcMotor.class, "MotorIntake");
     }
 
     /*
@@ -64,18 +65,6 @@ public class ProtIntake extends OpMode {
     public void init_loop() {
     }
 
-    /*
-     * This method will be called ONCE when start is pressed
-     * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#loop()
-     */
-    @Override
-    public void init_loop() {
-    }
-
-    /*
-     * This method will be called repeatedly in a loop
-     * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#loop()
-     */
     boolean dUp;
     boolean dUpPrev;
     boolean dDown;
@@ -90,8 +79,10 @@ public class ProtIntake extends OpMode {
             motorRamp.setPower(0);
         }
 
+
         if (gamepad1.left_trigger != 0) {
-            motorIntake.setPower(power);
+            motorIntake.setPower(-
+                    power);
             if (dUp&&!dUpPrev) {
                 power = power + 0.1;
                 power = Range.clip(power, 0.1, 1);
@@ -101,12 +92,9 @@ public class ProtIntake extends OpMode {
                 power = Range.clip(power, 0.1, 1);
             }
         }
-            if (gamepad1.left_trigger ==0){
-                motorIntake.setPower(0);
-            }
-            else {
-                motorIntake.setPower(0);
-            }
+        else{
+            motorIntake.setPower(0);
+        }
         telemetry.addData("Encoder", motorRamp.getCurrentPosition());
     }
 
