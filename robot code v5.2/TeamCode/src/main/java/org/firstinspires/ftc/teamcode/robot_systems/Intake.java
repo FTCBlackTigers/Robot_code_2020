@@ -35,8 +35,8 @@ public class Intake extends SubSystem {
 
     @Override
     public void init(HardwareMap hardwareMap, OpMode opMode) {
-        rampAngle = hardwareMap.get(DcMotor.class ,"rampAngle");
-        intakeMotor = hardwareMap.get(DcMotor.class , "intakeMotor");
+       rampAngle = hardwareMap.get(DcMotor.class ,"rampAngle");
+        intakeMotor =  hardwareMap.get(DcMotor.class , "intakeMotor");
         gateServo= hardwareMap.get(Servo.class, "gateServo");
         this.opMode= opMode;
         gateServo.setDirection(Servo.Direction.FORWARD);
