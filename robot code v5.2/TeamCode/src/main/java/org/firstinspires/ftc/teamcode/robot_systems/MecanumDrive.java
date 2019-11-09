@@ -330,10 +330,10 @@ public class MecanumDrive extends SubSystem {
         backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // start motion.
-        frontLeftDrive.setPower(-Math.abs(wheelsPowers.getFrontLeft()));
-        frontRightDrive.setPower(-Math.abs(wheelsPowers.getFrontRight()));
-        backLeftDrive.setPower(-Math.abs(wheelsPowers.getBackLeft()));
-        backRightDrive.setPower(-Math.abs(wheelsPowers.getBackRight()));
+        frontLeftDrive.setPower(Math.abs(wheelsPowers.getFrontLeft()));
+        frontRightDrive.setPower(Math.abs(wheelsPowers.getFrontRight()));
+        backLeftDrive.setPower(Math.abs(wheelsPowers.getBackLeft()));
+        backRightDrive.setPower(Math.abs(wheelsPowers.getBackRight()));
 
         while (((LinearOpMode)opMode).opModeIsActive() &&
                 (frontLeftDrive.isBusy() || frontRightDrive.isBusy() || backLeftDrive.isBusy() || backRightDrive.isBusy()) ){
