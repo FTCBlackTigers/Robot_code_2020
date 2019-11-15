@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.robot_systems;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -9,10 +10,10 @@ import org.firstinspires.ftc.teamcode.controller.Controller;
 
 public class Intake extends SubSystem {
     public enum RampAngle{
-        ANGLE_UP(0) , ANGLE_DOWN(1);
+        ANGLE_UP(0) , ANGLE_DOWN(140);
         private double angle;
         //TODO: find integer "tickPerDegree"
-        private double tickPerDegree = 0;
+        private double tickPerDegree = 12.711;
         private RampAngle (double angle){
             this.angle = angle;
         }
@@ -26,8 +27,8 @@ public class Intake extends SubSystem {
     Servo gateServo;
     //TODO: ADD TOUCH SENSOR
 
-    private final double rampPower=0.5;
-    private final double power=0.5;
+    private final double rampPower=1;
+    private final double power=1;
     private final double upPosRamp=1;
     private final double downPosRamp=0;
     private final double openPosGate=0;
@@ -41,7 +42,9 @@ public class Intake extends SubSystem {
         this.opMode= opMode;
         gateServo.setDirection(Servo.Direction.FORWARD);
         closeGate();
+        rampAngle.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rampAngle.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rampAngle.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     @Override
@@ -72,6 +75,8 @@ public class Intake extends SubSystem {
         if(operator.y.onClick()){
             closeGate();
         }
+        opMode.telemetry.addData("Target: ",rampAngle.getTargetPosition());
+        opMode.telemetry.addData ("Angle: ",rampAngle.getCurrentPosition());
     }
 
     public void collectStone(){
@@ -86,7 +91,7 @@ public class Intake extends SubSystem {
     public void moveRamp(RampAngle target) {
         rampAngle.setTargetPosition(target.getAngleInTicks());
         rampAngle.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rampAngle.setPower(-Math.abs(rampPower));
+        rampAngle.setPower(Math.abs(rampPower));
     }
     public void closeGate() {
         gateServo.setPosition(closePosGate);
