@@ -85,8 +85,7 @@ public class ProtIntake extends OpMode {
 
 
         if (controller.leftTrigger.getValue() != 0) {
-            motorIntake.setPower(-
-                    power);
+            motorIntake.setPower(-power);
             if (dUp&&!dUpPrev) {
                 power = power + 0.1;
                 power = Range.clip(power, 0.1, 1);

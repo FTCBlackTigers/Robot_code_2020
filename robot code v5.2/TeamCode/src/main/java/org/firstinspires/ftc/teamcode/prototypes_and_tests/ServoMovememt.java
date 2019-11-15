@@ -23,7 +23,7 @@ public class ServoMovememt extends OpMode {
         servo = hardwareMap.get (Servo.class, "servo");
         servo.setDirection(Servo.Direction.FORWARD);
 
-       //servo=hardwareMap.get( "servo", )
+
     }
 
 
@@ -40,12 +40,13 @@ public class ServoMovememt extends OpMode {
         telemetry.addData("servo" , servo.getPosition());
         controller.setValues(gamepad1);
         if (controller.dpadDown.onClick()){
-         servo.setPosition(servo.getPosition()-0.1) ;
+            servo.setPosition(servo.getPosition()-0.1) ;
         }
         else if (controller.dpadUp.onClick()) {
             servo.setPosition(servo.getPosition()+0.1) ;
         }
         controller.setPrevValues();
+
     }
 
 }
