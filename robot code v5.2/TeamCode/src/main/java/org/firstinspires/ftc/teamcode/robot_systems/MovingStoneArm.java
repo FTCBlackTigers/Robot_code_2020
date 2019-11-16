@@ -1,19 +1,24 @@
 package org.firstinspires.ftc.teamcode.robot_systems;
 
+import android.net.sip.SipSession;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.controller.Controller;
 
 public class MovingStoneArm extends SubSystem{
 
     public enum ArmAngle {
-        ON_STONE(0), STATE_ONE(0.3), STATE_TWO(0.6), STATE_THREE(1), RELEASE(5) , LOW_POS(6) , HIGH_POS(7);
+        ON_STONE(0), LEVEL_ONE(0.3), LEVEL_TWO(0.6), LEVEL_THREE(1), RELEASE(5) , LOW_POS(6) , HIGH_POS(7);
         private double angle;
         //TODO: find integer "tickPerDegree"
-        private double tickPerDegree = 0;
+        private double tickPerDegree = 200;
 
         private ArmAngle(double angle) {
             this.angle = angle;
@@ -30,23 +35,29 @@ public class MovingStoneArm extends SubSystem{
 
     DcMotor motorAngle;
     Servo stoneHold;
+    DistanceSensor sensorDistance;
+
 
 
     private final double addToAngle = 1;
     private final double GRAB_POS = 0;
     private final double RELEASED_POS = 0.6;
     private final double motorPower = 1;
-    private final int currentTarget = 0;
+    private  int currentTarget = 0;
     private States currentState = States.AT_TARGET ;
-
-    private final ArmAngle[]choosTarget = {ArmAngle.ON_STONE, ArmAngle.STATE_ONE , ArmAngle.STATE_TWO , ArmAngle.STATE_THREE};
+    private final ArmAngle[]choosTarget = {ArmAngle.ON_STONE, ArmAngle.LEVEL_ONE, ArmAngle.LEVEL_TWO, ArmAngle.LEVEL_THREE};
 
 
     @Override
     public void init(HardwareMap hardwareMap, OpMode opMode) {
 
-        motorAngle = hardwareMap.get(DcMotor.class ,"motorAngle");
-        stoneHold = hardwareMap.get(Servo.class ,"stoneHold");
+        motorAngle = hardwareMap.get(DcMotor.class, "motorAngle");
+        stoneHold = hardwareMap.get(Servo.class, "stoneHold");
+        this.opMode = opMode;
+        sensorDistance = hardwareMap.get(DistanceSensor.class, "sensor stone");
+        motorAngle.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorAngle.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
     }
 
     @Override
@@ -55,6 +66,33 @@ public class MovingStoneArm extends SubSystem{
         if(operator.b.onClick()){
 
         }
+        if(operator.dpadUp.onClick()){
+            currentTarget++;
+            currentTarget=Range.clip(currentTarget,1, choosTarget.length-1);
+            moveAngle(choosTarget[currentTarget]);
+           currentState=States.MOVING_TO_TARGET;
+
+        }
+        if(operator.dpadDown.onClick()) {
+            currentTarget--;
+            currentTarget = Range.clip(currentTarget, 1, choosTarget.length - 1);
+            moveAngle(choosTarget[currentTarget]);
+            currentState = States.MOVING_TO_TARGET;
+        }
+        if(operator.b.onClick()){
+            moveAngle(ArmAngle.RELEASE);
+            currentState= States.RELEASE_STONE;
+
+        }
+        if(operator.x.onClick()){
+            moveAngle(ArmAngle.LOW_POS);
+            currentState= States.READY_TO_TAKE_STONE;
+
+    }
+        opMode.telemetry.addData("current State",currentState);
+        opMode.telemetry.addData("target",motorAngle.getTargetPosition());
+        opMode.telemetry.addData("current position",motorAngle.getCurrentPosition());
+        opMode.telemetry.addData("servo position",stoneHold.getPosition());
         switch (currentState){
             case AT_TARGET:
                 break;
@@ -78,19 +116,26 @@ public class MovingStoneArm extends SubSystem{
                     motorAngle.setPower(0);
                     motorAngle.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 }
-                if (true){
+                if (driver.b.onClick()){
                     //TODO:ask if stone on ramp by sensor
                     moveAngle(ArmAngle.HIGH_POS);
 
                 }
+                if(sensorDistance.getDistance(DistanceUnit.CM)<10){
+                    openGrabServo();
+                    moveAngle(ArmAngle.ON_STONE);
+                 if(!motorAngle.isBusy()){
+                     grabStone();
+                     currentState = States.AT_TARGET;
+                 }
+                }
                 break;
-
-
         }
 
         if(operator.dpadUp.onClick()){
             //choosTarget[currentTarget + 1];
         }
+
     }
     public void grabStone (){
      stoneHold.setPosition(GRAB_POS);
