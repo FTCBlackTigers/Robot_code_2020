@@ -11,18 +11,21 @@ import org.firstinspires.ftc.teamcode.robot_systems.MovingStoneArm;
 @TeleOp(name = "TestSystem", group = "teleop")
 public class TestSystem extends OpMode {
     MovingStoneArm movingStoneArm = new MovingStoneArm();
+    Intake intake = new Intake();
     private ElapsedTime runtime = new ElapsedTime();
     Controller driver = new Controller();
     Controller oparetor = new Controller();
     @Override
     public void init() {
         movingStoneArm.init(hardwareMap, this);
+        intake.init(hardwareMap, this);
     }
 
     @Override
     public void loop() {
         driver.setValues(gamepad1);
         oparetor.setValues(gamepad2);
+        intake.teleopMotion(driver, oparetor);
         movingStoneArm.teleopMotion(driver, oparetor);
         driver.setPrevValues();
         oparetor.setPrevValues();

@@ -6,10 +6,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.controller.Controller;
 
 public class Robot {
-    MecanumDrive mecanumDrive = new MecanumDrive();
-    Intake intake = new Intake();
-    FoundationMove foundationMove = new FoundationMove();
-    MovingStoneArm movingStoneArm = new MovingStoneArm();
+    public MecanumDrive mecanumDrive = new MecanumDrive();
+    public Intake intake = new Intake();
+    public FoundationMove foundationMove = new FoundationMove();
+    public MovingStoneArm movingStoneArm = new MovingStoneArm();
     public void init(HardwareMap hardwareMap , OpMode opMode){
         mecanumDrive.init(hardwareMap , opMode);
         intake.init(hardwareMap , opMode);

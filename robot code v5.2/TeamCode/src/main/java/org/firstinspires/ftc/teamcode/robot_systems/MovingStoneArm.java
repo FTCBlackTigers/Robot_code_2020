@@ -1,9 +1,8 @@
 package org.firstinspires.ftc.teamcode.robot_systems;
 
-import android.net.sip.SipSession;
-
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -15,10 +14,10 @@ import org.firstinspires.ftc.teamcode.controller.Controller;
 public class MovingStoneArm extends SubSystem{
 
     public enum ArmAngle {
-        ON_STONE(0), LEVEL_ONE(0.3), LEVEL_TWO(0.6), LEVEL_THREE(1), RELEASE(5) , LOW_POS(6) , HIGH_POS(7);
+        ON_STONE(0), LEVEL_ONE(160), LEVEL_TWO(140), LEVEL_THREE(120), RELEASE(10) , LOW_POS(90) , HIGH_POS(120);
         private double angle;
         //TODO: find integer "tickPerDegree"
-        private double tickPerDegree = 200;
+        private double tickPerDegree = 5;
 
         private ArmAngle(double angle) {
             this.angle = angle;
@@ -35,7 +34,8 @@ public class MovingStoneArm extends SubSystem{
 
     DcMotor motorAngle;
     Servo stoneHold;
-    DistanceSensor sensorDistance;
+    DistanceSensor stoneArmDistanceSensor;
+    DistanceSensor rampDistanceSensor;
 
 
 
@@ -53,19 +53,17 @@ public class MovingStoneArm extends SubSystem{
 
         motorAngle = hardwareMap.get(DcMotor.class, "motorAngle");
         stoneHold = hardwareMap.get(Servo.class, "stoneHold");
+        rampDistanceSensor = hardwareMap.get(DistanceSensor.class, "rampDistanceSensor");
         this.opMode = opMode;
-        sensorDistance = hardwareMap.get(DistanceSensor.class, "sensor stone");
+        stoneArmDistanceSensor = hardwareMap.get(DistanceSensor.class, "sensor stone");
         motorAngle.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorAngle.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorAngle.setDirection(DcMotorSimple.Direction.REVERSE);
 
     }
 
     @Override
     public void teleopMotion(Controller driver, Controller operator) {
-
-        if(operator.b.onClick()){
-
-        }
         if(operator.dpadUp.onClick()){
             currentTarget++;
             currentTarget=Range.clip(currentTarget,1, choosTarget.length-1);
@@ -116,12 +114,11 @@ public class MovingStoneArm extends SubSystem{
                     motorAngle.setPower(0);
                     motorAngle.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 }
-                if (driver.b.onClick()){
-                    //TODO:ask if stone on ramp by sensor
+                if (driver.b.onClick() || rampDistanceSensor.getDistance(DistanceUnit.CM)<10){
                     moveAngle(ArmAngle.HIGH_POS);
 
                 }
-                if(sensorDistance.getDistance(DistanceUnit.CM)<10){
+                if(stoneArmDistanceSensor.getDistance(DistanceUnit.CM)<10){
                     openGrabServo();
                     moveAngle(ArmAngle.ON_STONE);
                  if(!motorAngle.isBusy()){
@@ -131,11 +128,6 @@ public class MovingStoneArm extends SubSystem{
                 }
                 break;
         }
-
-        if(operator.dpadUp.onClick()){
-            //choosTarget[currentTarget + 1];
-        }
-
     }
     public void grabStone (){
      stoneHold.setPosition(GRAB_POS);
@@ -143,10 +135,6 @@ public class MovingStoneArm extends SubSystem{
     public void openGrabServo (){
      stoneHold.setPosition(RELEASED_POS);
     }
-    public void releaseStone (){
-       moveAngle ( ArmAngle.RELEASE);
-    }
-
 
     public void moveAngle(ArmAngle target) {
         if (target == ArmAngle.RELEASE ){
@@ -160,6 +148,19 @@ public class MovingStoneArm extends SubSystem{
         motorAngle.setPower(Math.abs(motorPower));
     }
 
+    public void manualTeleop(Controller driver, Controller operator){
+        if(operator.a.isPressed()){
+            motorAngle.setPower(-0.5);
+        }
+
+         else if (operator.b.isPressed()){
+            motorAngle.setPower(0.5);
+        }
+        else{
+            motorAngle.setPower(0);
+        }
+
+    }
 
 }
 
