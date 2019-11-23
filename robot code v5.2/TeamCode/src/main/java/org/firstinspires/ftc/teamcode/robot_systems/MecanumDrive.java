@@ -337,10 +337,10 @@ public class MecanumDrive extends SubSystem {
 
         while (((LinearOpMode)opMode).opModeIsActive() &&
                 (frontLeftDrive.isBusy() || frontRightDrive.isBusy() || backLeftDrive.isBusy() || backRightDrive.isBusy()) ){
-            opMode.telemetry.addData("front left: " ,newFrontLeftTarget + " , " + frontLeftDrive.getCurrentPosition());
-            opMode.telemetry.addData("front right: " ,newFrontRightTarget + " , " + frontRightDrive.getCurrentPosition());
-            opMode.telemetry.addData("rear left: " ,newBackLeftTarget + " , " + backLeftDrive.getCurrentPosition());
-            opMode.telemetry.addData("rear right: " ,newBackRightTarget + " , " + backRightDrive.getCurrentPosition());
+            opMode.telemetry.addData("front left: " ,newFrontLeftTarget + " , " + frontLeftDrive.getCurrentPosition() + ", power: " + frontLeftDrive.getPower());
+            opMode.telemetry.addData("front right: " ,newFrontRightTarget + " , " + frontRightDrive.getCurrentPosition() + ", power: " + frontRightDrive.getPower());
+            opMode.telemetry.addData("rear left: " ,newBackLeftTarget + " , " + backLeftDrive.getCurrentPosition() + ", power: " + backLeftDrive.getPower());
+            opMode.telemetry.addData("rear right: " ,newBackRightTarget + " , " + backRightDrive.getCurrentPosition() + ", power: " + backRightDrive.getPower());
             opMode.telemetry.update();
         }
 

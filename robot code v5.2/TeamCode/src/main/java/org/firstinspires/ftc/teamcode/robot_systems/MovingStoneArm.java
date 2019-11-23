@@ -28,37 +28,37 @@ public class MovingStoneArm extends SubSystem{
         }
     }
 
-        public enum States{
-            AT_TARGET , RELEASE_STONE , MOVING_TO_TARGET , READY_TO_TAKE_STONE,  ;
-            }
+    public enum States{
+        AT_TARGET , RELEASE_STONE , MOVING_TO_TARGET , READY_TO_TAKE_STONE
+    }
 
     DcMotor motorAngle;
     Servo stoneHold;
     DistanceSensor stoneArmDistanceSensor;
     DistanceSensor rampDistanceSensor;
 
-
-
-    private final double addToAngle = 1;
-    private final double GRAB_POS = 0;
-    private final double RELEASED_POS = 0.6;
-    private final double motorPower = 1;
-    private  int currentTarget = 0;
-    private States currentState = States.AT_TARGET ;
     private final ArmAngle[]choosTarget = {ArmAngle.ON_STONE, ArmAngle.LEVEL_ONE, ArmAngle.LEVEL_TWO, ArmAngle.LEVEL_THREE};
 
+    private static final double addToAngle = 1;
+    private static final double GRAB_POS = 0;
+    private static final double RELEASED_POS = 0.6;
+    private static final double ANGLE_POWER = 1;
+
+    private int currentTarget = 0;
+    private States currentState = States.AT_TARGET ;
 
     @Override
     public void init(HardwareMap hardwareMap, OpMode opMode) {
-
+        this.opMode = opMode;
         motorAngle = hardwareMap.get(DcMotor.class, "motorAngle");
         stoneHold = hardwareMap.get(Servo.class, "stoneHold");
         rampDistanceSensor = hardwareMap.get(DistanceSensor.class, "rampDistanceSensor");
-        this.opMode = opMode;
         stoneArmDistanceSensor = hardwareMap.get(DistanceSensor.class, "sensor stone");
+
+        motorAngle.setDirection(DcMotorSimple.Direction.REVERSE);
+
         motorAngle.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorAngle.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorAngle.setDirection(DcMotorSimple.Direction.REVERSE);
 
     }
 
@@ -80,13 +80,11 @@ public class MovingStoneArm extends SubSystem{
         if(operator.b.onClick()){
             moveAngle(ArmAngle.RELEASE);
             currentState= States.RELEASE_STONE;
-
         }
         if(operator.x.onClick()){
             moveAngle(ArmAngle.LOW_POS);
             currentState= States.READY_TO_TAKE_STONE;
-
-    }
+        }
         opMode.telemetry.addData("current State",currentState);
         opMode.telemetry.addData("target",motorAngle.getTargetPosition());
         opMode.telemetry.addData("current position",motorAngle.getCurrentPosition());
@@ -121,10 +119,10 @@ public class MovingStoneArm extends SubSystem{
                 if(stoneArmDistanceSensor.getDistance(DistanceUnit.CM)<10){
                     openGrabServo();
                     moveAngle(ArmAngle.ON_STONE);
-                 if(!motorAngle.isBusy()){
-                     grabStone();
-                     currentState = States.AT_TARGET;
-                 }
+                    if(!motorAngle.isBusy()){
+                        grabStone();
+                        currentState = States.AT_TARGET;
+                    }
                 }
                 break;
         }
@@ -145,22 +143,19 @@ public class MovingStoneArm extends SubSystem{
             motorAngle.setTargetPosition(target.getAngleInTicks());
         }
         motorAngle.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorAngle.setPower(Math.abs(motorPower));
+        motorAngle.setPower(Math.abs(ANGLE_POWER));
     }
 
     public void manualTeleop(Controller driver, Controller operator){
         if(operator.a.isPressed()){
             motorAngle.setPower(-0.5);
         }
-
-         else if (operator.b.isPressed()){
+        else if (operator.b.isPressed()){
             motorAngle.setPower(0.5);
         }
         else{
             motorAngle.setPower(0);
         }
-
     }
-
 }
 

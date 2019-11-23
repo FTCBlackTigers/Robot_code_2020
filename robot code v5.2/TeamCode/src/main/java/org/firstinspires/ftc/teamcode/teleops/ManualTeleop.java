@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.robot_systems.Robot;
 
 @TeleOp(name = "ManualTeleOp", group = "TeleOp")
 public class ManualTeleop extends OpMode {
-    Robot robot =new Robot();
+    Robot robot = new Robot();
     Controller driver = new Controller();
     Controller operator= new Controller();
     @Override

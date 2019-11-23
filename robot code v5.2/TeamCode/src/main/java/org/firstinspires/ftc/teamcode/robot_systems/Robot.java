@@ -10,6 +10,7 @@ public class Robot {
     public Intake intake = new Intake();
     public FoundationMove foundationMove = new FoundationMove();
     public MovingStoneArm movingStoneArm = new MovingStoneArm();
+
     public void init(HardwareMap hardwareMap , OpMode opMode){
         mecanumDrive.init(hardwareMap , opMode);
         intake.init(hardwareMap , opMode);

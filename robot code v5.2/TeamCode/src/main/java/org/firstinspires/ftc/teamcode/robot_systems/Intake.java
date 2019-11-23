@@ -17,7 +17,7 @@ public class Intake extends SubSystem {
         //TODO: find integer "tickPerDegree"
         private double tickPerDegree = 12.711;
 
-        private RampAngle(double angle) {
+        RampAngle(double angle) {
             this.angle = angle;
         }
 
@@ -32,26 +32,27 @@ public class Intake extends SubSystem {
     DistanceSensor rampDistanceSensor;
     DistanceSensor stoneArmDistanceSensor;
 
-    private final double rampPower = 1;
-    private final double power = 1;
-    private final double upPosRamp = 1;
-    private final double downPosRamp = 0;
-    private final double openPosGate = 0;
-    private final double closePosGate = 1;
+    private static final double RAMP_POWER = 1;
+    private static final double INTAKE_POWER = 1;
+    private static final double OPEN_GATE_POS = 0;
+    private static final double CLOSE_GATE_POS = 1;
 
     @Override
     public void init(HardwareMap hardwareMap, OpMode opMode) {
+        this.opMode = opMode;
         rampAngle = hardwareMap.get(DcMotor.class, "rampAngle");
         intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
         gateServo = hardwareMap.get(Servo.class, "gateServo");
         rampDistanceSensor = hardwareMap.get(DistanceSensor.class, "rampDistanceSensor");
         stoneArmDistanceSensor = hardwareMap.get(DistanceSensor.class, "sensor stone");
-        this.opMode = opMode;
+
         gateServo.setDirection(Servo.Direction.FORWARD);
-        closeGate();
+
         rampAngle.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rampAngle.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rampAngle.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        closeGate();
     }
 
     @Override
@@ -86,25 +87,23 @@ public class Intake extends SubSystem {
     }
 
     public void collectStone() {
-        intakeMotor.setPower(power);
+        intakeMotor.setPower(INTAKE_POWER);
     }
-
     public void reversIntake() {
-        intakeMotor.setPower(-power);
+        intakeMotor.setPower(-INTAKE_POWER);
     }
 
     public void openGate() {
-        gateServo.setPosition(openPosGate);
+        gateServo.setPosition(OPEN_GATE_POS);
+    }
+    public void closeGate() {
+        gateServo.setPosition(CLOSE_GATE_POS);
     }
 
     public void moveRamp(RampAngle target) {
         rampAngle.setTargetPosition(target.getAngleInTicks());
         rampAngle.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rampAngle.setPower(Math.abs(rampPower));
-    }
-
-    public void closeGate() {
-        gateServo.setPosition(closePosGate);
+        rampAngle.setPower(Math.abs(RAMP_POWER));
     }
 
     public void getReadyToCollect() {
@@ -122,7 +121,5 @@ public class Intake extends SubSystem {
         else{
             rampAngle.setPower(0);
         }
-
-
     }
 }

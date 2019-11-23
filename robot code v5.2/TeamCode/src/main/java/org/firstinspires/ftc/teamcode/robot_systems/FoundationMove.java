@@ -8,11 +8,12 @@ import org.firstinspires.ftc.teamcode.controller.Controller;
 
 public class FoundationMove extends SubSystem {
     Servo foundServo;
-    double upPos = 0.6;
-    double downPos = 0;
+    final double UP_POP = 0.6;
+    final double DOWN_POS = 0;
 
     @Override
     public void init(HardwareMap hardwareMap, OpMode opMode) {
+        this.opMode = opMode;
         foundServo = hardwareMap.get(Servo.class, "foundServo");
         up();
     }
@@ -27,9 +28,9 @@ public class FoundationMove extends SubSystem {
         }
     }
     public void up() {
-        foundServo.setPosition(upPos);
+        foundServo.setPosition(UP_POP);
     }
     public void down() {
-        foundServo.setPosition(downPos);
+        foundServo.setPosition(DOWN_POS);
     }
 }

@@ -29,6 +29,5 @@ public class TestSystem extends OpMode {
         movingStoneArm.teleopMotion(driver, oparetor);
         driver.setPrevValues();
         oparetor.setPrevValues();
-
     }
 }
