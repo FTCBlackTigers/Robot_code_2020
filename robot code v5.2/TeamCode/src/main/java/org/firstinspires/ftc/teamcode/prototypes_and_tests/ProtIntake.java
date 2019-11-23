@@ -36,6 +36,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.controller.Controller;
+
 /**
  * Demonstrates empty OpMode
  */
@@ -46,6 +48,7 @@ public class ProtIntake extends OpMode {
     private DcMotor motorIntake = null;
     private DcMotor motorRamp = null;
     private double power = 0.5;
+    Controller controller = new Controller();
 
 
 
@@ -54,20 +57,17 @@ public class ProtIntake extends OpMode {
         telemetry.addData("Status", "Initialized");
 
         motorRamp = hardwareMap.get(DcMotor.class, "MotorRamp");
+        motorIntake = hardwareMap.get(DcMotor.class, "MotorIntake");
     }
 
     /*
-     * This method will be called ONCE when start is pressed
-     * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#loop()
+     * Code to run when the op mode is first enabled goes here
+     * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#start()
      */
     @Override
     public void init_loop() {
     }
 
-    /*
-     * This method will be called repeatedly in a loop
-     * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#loop()
-     */
     boolean dUp;
     boolean dUpPrev;
     boolean dDown;
@@ -76,14 +76,16 @@ public class ProtIntake extends OpMode {
     @Override
     public void loop() {
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        motorRamp.setPower(-gamepad1.left_stick_y);
+        controller.setValues(gamepad1);
+        motorRamp.setPower(controller.leftStickY.getValue());
 
-        if (gamepad1.left_stick_y == 0){
+        if (controller.leftStickY.getValue() == 0){
             motorRamp.setPower(0);
         }
 
-        if (gamepad1.left_trigger != 0) {
-            motorIntake.setPower(power);
+
+        if (controller.leftTrigger.getValue() != 0) {
+            motorIntake.setPower(-power);
             if (dUp&&!dUpPrev) {
                 power = power + 0.1;
                 power = Range.clip(power, 0.1, 1);
@@ -93,12 +95,14 @@ public class ProtIntake extends OpMode {
                 power = Range.clip(power, 0.1, 1);
             }
         }
-            if (gamepad1.left_trigger ==0){
-                motorIntake.setPower(0);
-            }
-            else {
-                motorIntake.setPower(0);
-            }
+        else{
+            motorIntake.setPower(0);
+        }
+        if(controller.b.onClick()){
+            motorIntake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motorIntake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+        controller.setPrevValues();
         telemetry.addData("Encoder", motorRamp.getCurrentPosition());
     }
 
