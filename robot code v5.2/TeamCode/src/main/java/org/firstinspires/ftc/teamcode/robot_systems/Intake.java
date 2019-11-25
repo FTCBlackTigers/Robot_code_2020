@@ -35,7 +35,7 @@ public class Intake extends SubSystem {
     private static final double RAMP_POWER = 1;
     private static final double INTAKE_POWER = 1;
     private static final double OPEN_GATE_POS = 0;
-    private static final double CLOSE_GATE_POS = 1;
+    private static final double CLOSE_GATE_POS = 0.35;
 
     @Override
     public void init(HardwareMap hardwareMap, OpMode opMode) {
@@ -112,14 +112,28 @@ public class Intake extends SubSystem {
     }
 
     public void manualTeleop(Controller driver, Controller operator) {
-        if (operator.y.isPressed()) {
-            rampAngle.setPower(-0.5);
+        if (operator.rightTrigger.isPressed()) {
+            rampAngle.setPower(operator.rightTrigger.getValue());
+
         }
-        else if (operator.x.isPressed()) {
-            rampAngle.setPower(0.5);
+        else if (operator.leftTrigger.isPressed()) {
+            rampAngle.setPower(-operator.leftTrigger.getValue());
         }
         else{
             rampAngle.setPower(0);
         }
+        if(operator.x.isPressed()){
+            openGate();
+        }
+        if(operator.y.isPressed()){
+            closeGate();
+        }
+        if(driver.rightBumper.isPressed()){
+            collectStone();
+        }
+        if(driver.leftBumper.isPressed()){
+            reversIntake();
+        }
     }
+
 }

@@ -120,14 +120,14 @@ public class MovingStoneArm extends SubSystem{
                     openGrabServo();
                     moveAngle(ArmAngle.ON_STONE);
                     if(!motorAngle.isBusy()){
-                        grabStone();
+                        closeGradServo();
                         currentState = States.AT_TARGET;
                     }
                 }
                 break;
         }
     }
-    public void grabStone (){
+    public void closeGradServo(){
      stoneHold.setPosition(GRAB_POS);
     }
     public void openGrabServo (){
@@ -148,14 +148,12 @@ public class MovingStoneArm extends SubSystem{
 
     public void manualTeleop(Controller driver, Controller operator){
         if(operator.a.isPressed()){
-            motorAngle.setPower(-0.5);
+            openGrabServo();
         }
-        else if (operator.b.isPressed()){
-            motorAngle.setPower(0.5);
+        if(operator.b.isPressed()){
+            closeGradServo();
         }
-        else{
-            motorAngle.setPower(0);
-        }
+        motorAngle.setPower(operator.leftStickY.getValue());
     }
 }
 
