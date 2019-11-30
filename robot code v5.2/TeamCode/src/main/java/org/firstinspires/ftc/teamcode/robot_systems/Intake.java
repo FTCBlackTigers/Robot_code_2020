@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.controller.Controller;
 
 public class Intake extends SubSystem {
     public enum RampAngle {
-        ANGLE_UP(0), ANGLE_DOWN(140);
+        ANGLE_UP(80), ANGLE_DOWN(160);
         private double angle;
         //TODO: find integer "tickPerDegree"
         private double tickPerDegree = 12.711;
@@ -112,16 +112,7 @@ public class Intake extends SubSystem {
     }
 
     public void manualTeleop(Controller driver, Controller operator) {
-        if (operator.rightTrigger.isPressed()) {
-            rampAngle.setPower(operator.rightTrigger.getValue());
-
-        }
-        else if (operator.leftTrigger.isPressed()) {
-            rampAngle.setPower(-operator.leftTrigger.getValue());
-        }
-        else{
-            rampAngle.setPower(0);
-        }
+        rampAngle.setPower(operator.rightStickY.getValue());
         if(operator.x.isPressed()){
             openGate();
         }
@@ -131,8 +122,11 @@ public class Intake extends SubSystem {
         if(driver.rightBumper.isPressed()){
             collectStone();
         }
-        if(driver.leftBumper.isPressed()){
+        else if(driver.leftBumper.isPressed()){
             reversIntake();
+        }
+        else {
+            intakeMotor.setPower(0);
         }
     }
 

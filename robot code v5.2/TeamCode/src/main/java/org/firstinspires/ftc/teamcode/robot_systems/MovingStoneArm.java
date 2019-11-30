@@ -14,10 +14,9 @@ import org.firstinspires.ftc.teamcode.controller.Controller;
 public class MovingStoneArm extends SubSystem{
 
     public enum ArmAngle {
-        ON_STONE(0), LEVEL_ONE(160), LEVEL_TWO(140), LEVEL_THREE(120), RELEASE(10) , LOW_POS(90) , HIGH_POS(120);
+        ON_STONE(0), LEVEL_ONE(190), LEVEL_TWO(170), LEVEL_THREE(140), RELEASE(10) , LOW_POS(30) , HIGH_POS(90);
         private double angle;
-        //TODO: find integer "tickPerDegree"
-        private double tickPerDegree = 5;
+        private double tickPerDegree =19.111;
 
         private ArmAngle(double angle) {
             this.angle = angle;
@@ -29,7 +28,7 @@ public class MovingStoneArm extends SubSystem{
     }
 
     public enum States{
-        AT_TARGET , RELEASE_STONE , MOVING_TO_TARGET , READY_TO_TAKE_STONE
+        AT_TARGET , RELEASE_STONE , MOVING_TO_TARGET , READY_TO_TAKE_STONE, GOING_TO_TAKE_STONE
     }
 
     DcMotor motorAngle;
@@ -41,7 +40,7 @@ public class MovingStoneArm extends SubSystem{
 
     private static final double addToAngle = 1;
     private static final double GRAB_POS = 0;
-    private static final double RELEASED_POS = 0.6;
+    private static final double RELEASED_POS = 0.5;
     private static final double ANGLE_POWER = 1;
 
     private int currentTarget = 0;
@@ -93,7 +92,7 @@ public class MovingStoneArm extends SubSystem{
             case AT_TARGET:
                 break;
             case RELEASE_STONE:
-                if (!motorAngle.isBusy()){
+                if (Math.abs(motorAngle.getTargetPosition()-motorAngle.getCurrentPosition())<50){
                     motorAngle.setPower(0);
                     motorAngle.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     openGrabServo();
@@ -119,12 +118,16 @@ public class MovingStoneArm extends SubSystem{
                 if(stoneArmDistanceSensor.getDistance(DistanceUnit.CM)<10){
                     openGrabServo();
                     moveAngle(ArmAngle.ON_STONE);
-                    if(!motorAngle.isBusy()){
-                        closeGradServo();
-                        currentState = States.AT_TARGET;
-                    }
+                    currentState = States.GOING_TO_TAKE_STONE;
                 }
                 break;
+            case GOING_TO_TAKE_STONE:
+                if (Math.abs(motorAngle.getTargetPosition()-motorAngle.getCurrentPosition())<50){
+                    motorAngle.setPower(0);
+                    motorAngle.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    closeGradServo();
+                    currentState = States.AT_TARGET;
+                }
         }
     }
     public void closeGradServo(){

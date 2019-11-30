@@ -53,7 +53,7 @@ public class timerTest extends OpMode {
       @Override
       public void run() {
         telemetry.addLine("calling from the delay").addData("time after", getRuntime());
-        t.cancel();
+        //t.cancel();
       }
     }, 2000);
   }
@@ -81,6 +81,9 @@ public class timerTest extends OpMode {
           telemetry.addData("a pressing daley task", getRuntime());
         }
       }, 2000);
+    }
+    if(gamepad1.b){
+      //t.cancel();
     }
   }
 }

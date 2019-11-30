@@ -169,10 +169,10 @@ public class MecanumDrive extends SubSystem {
         backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -305,7 +305,7 @@ public class MecanumDrive extends SubSystem {
         Motion motion = new Motion(Math.abs(speed), Math.toRadians(angle), 0);
 
         Wheels wheelsPowers = motionToWheels(motion);
-        int ticks = (int)(distant / Math.cos(Math.PI/4) * COUNTS_PER_CM);
+        int ticks = (int)(distant / Math.sin(Math.PI/4) * COUNTS_PER_CM);
 
         int newFrontLeftTarget =  frontLeftDrive.getCurrentPosition() + (int)(ticks * wheelsPowers.getFrontLeft());
         int newFrontRightTarget = frontRightDrive.getCurrentPosition() + (int)(ticks * wheelsPowers.getFrontRight());
