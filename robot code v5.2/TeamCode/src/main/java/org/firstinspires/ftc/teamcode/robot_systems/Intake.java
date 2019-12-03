@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot_systems;
 
+import android.telephony.euicc.DownloadableSubscription;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -12,7 +14,7 @@ import org.firstinspires.ftc.teamcode.controller.Controller;
 
 public class Intake extends SubSystem {
     public enum RampAngle {
-        ANGLE_UP(80), ANGLE_DOWN(160);
+        ANGLE_UP(80), ANGLE_DOWN(160), UNDER_BRIDGE(130);
         private double angle;
         //TODO: find integer "tickPerDegree"
         private double tickPerDegree = 12.711;
@@ -62,20 +64,40 @@ public class Intake extends SubSystem {
             rampAngle.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
-        if (driver.leftBumper.isPressed()) {
+        /*if (driver.leftBumper.isPressed()) {
             reversIntake();
         } else if (driver.rightBumper.isPressed()) {
             collectStone();
         }
         if (driver.rightBumper.onRealese() || driver.leftBumper.onRealese()) {
             getReadyToCollect();
+        }*/
+        if (operator.leftBumper.isPressed()) {
+            collectStone();
+            if (rampDistanceSensor.getDistance(DistanceUnit.CM) < 10) {
+               moveRamp(RampAngle.ANGLE_UP);
+            }
+            else{
+                moveRamp(RampAngle.ANGLE_DOWN);
+            }
         }
-        if (driver.b.onClick() || rampDistanceSensor.getDistance(DistanceUnit.CM) < 10) {
+        else if (operator.leftBumper.onRealese()){
+            moveRamp(RampAngle.UNDER_BRIDGE);
+            getReadyToCollect();
+        }
+        if (operator.rightStickY.isPressed()){
+            rampAngle.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            rampAngle.setPower(operator.rightStickY.getValue());
+        }
+        else if (operator.rightStickY.onRealese()){
+            rampAngle.setPower(0);
+        }
+        /*if (driver.b.onClick() || rampDistanceSensor.getDistance(DistanceUnit.CM) < 10) {
             moveRamp(RampAngle.ANGLE_UP);
         }
         if (driver.a.onClick() || stoneArmDistanceSensor.getDistance(DistanceUnit.CM) < 10) {
             moveRamp(RampAngle.ANGLE_DOWN);
-        }
+        }*/
         if (operator.a.onClick()) {
             openGate();
         }
