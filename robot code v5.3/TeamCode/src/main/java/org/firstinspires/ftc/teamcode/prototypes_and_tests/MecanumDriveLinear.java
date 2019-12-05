@@ -14,11 +14,11 @@ public class MecanumDriveLinear extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         mecanumDrive.init(hardwareMap , this);
         waitForStart();
-        //mecanumDrive.driveByEncoder(0.5,100, MecanumDrive.DriveDirection.RIGHT,5);
-        //mecanumDrive.driveByEncoder(0.5,100, MecanumDrive.DriveDirection.LEFT,5);
-       //mecanumDrive.driveByEncoder(0.5,100, MecanumDrive.DriveDirection.BACKWARD,5);
-        //mecanumDrive.driveByEncoder(0.5,100, MecanumDrive.DriveDirection.FORWARD,5);
-       mecanumDrive.driveByEncoder(200,45,0.5 );
+       mecanumDrive.driveByEncoder(100,0,0.5 );
+        mecanumDrive.driveByEncoder(100,90,0.5 );
+        mecanumDrive.driveByEncoder(100,180,0.5 );
+        mecanumDrive.driveByEncoder(100,-90,0.5 );
+        mecanumDrive.turnByGyroAbsolut(0,3);
 
 
 

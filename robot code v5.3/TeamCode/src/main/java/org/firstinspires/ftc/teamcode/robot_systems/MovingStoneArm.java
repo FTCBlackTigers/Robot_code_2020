@@ -63,6 +63,20 @@ public class MovingStoneArm extends SubSystem{
 
     @Override
     public void teleopMotion(Controller driver, Controller operator) {
+        if(operator.leftStickY.isPressed()){
+            motorAngle.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motorAngle.setPower(operator.leftStickY.getValue());
+            currentState = States.AT_TARGET;
+        }
+        if(operator.leftStickY.onRealese() ){
+            motorAngle.setPower(0);
+        }
+        if(operator.a.isPressed()){
+            openGrabServo();
+        }
+        if(operator.b.isPressed()){
+            closeGradServo();
+        }
         if(operator.dpadUp.onClick()){
             currentTarget++;
             currentTarget=Range.clip(currentTarget,1, choosTarget.length-1);
@@ -76,7 +90,7 @@ public class MovingStoneArm extends SubSystem{
             moveAngle(choosTarget[currentTarget]);
             currentState = States.MOVING_TO_TARGET;
         }
-        if(operator.b.onClick()){
+        if(operator.rightBumper.onClick()){
             moveAngle(ArmAngle.RELEASE);
             currentState= States.RELEASE_STONE;
         }
@@ -111,7 +125,7 @@ public class MovingStoneArm extends SubSystem{
                     motorAngle.setPower(0);
                     motorAngle.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 }
-                if (driver.b.onClick() || rampDistanceSensor.getDistance(DistanceUnit.CM)<10){
+                if (rampDistanceSensor.getDistance(DistanceUnit.CM)<10){
                     moveAngle(ArmAngle.HIGH_POS);
 
                 }

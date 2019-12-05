@@ -45,6 +45,7 @@ public class MecanumDrive extends SubSystem {
         private double frontRight;
         private double backLeft;
         private double backRight;
+        private double maxMag;
 
         public double getFrontLeft() {
             return frontLeft;
@@ -80,11 +81,15 @@ public class MecanumDrive extends SubSystem {
             double minPower = Collections.min(powers);
             double maxPower = Collections.max(powers);
             double maxMag = Math.max(Math.abs(minPower), Math.abs(maxPower));
+            this.maxMag = maxMag;
 
             for (int i = 0; i < powers.size(); i++) {
                 powers.set(i, powers.get(i) / maxMag);
             }
         }
+         public double getMaxPower(){
+            return maxMag;
+         }
         /**
          * Scales the wheel powers by the given factor.
          * @param scalar The wheel power scaling factor.
@@ -308,10 +313,10 @@ public class MecanumDrive extends SubSystem {
         int ticks = (int)(distant * COUNTS_PER_CM);
         //int ticks = (int)(distant / Math.cos(Math.PI/4) * COUNTS_PER_CM);
 
-        int newFrontLeftTarget =  frontLeftDrive.getCurrentPosition() + (int)(ticks * wheelsPowers.getFrontLeft());
-        int newFrontRightTarget = frontRightDrive.getCurrentPosition() + (int)(ticks * wheelsPowers.getFrontRight());
-        int newBackLeftTarget = backLeftDrive.getCurrentPosition() + (int)(ticks * wheelsPowers.getBackLeft());
-        int newBackRightTarget = backRightDrive.getCurrentPosition() + (int)(ticks * wheelsPowers.getBackRight());
+        int newFrontLeftTarget =  frontLeftDrive.getCurrentPosition() + (int)(ticks * (wheelsPowers.getFrontLeft()/ wheelsPowers.getMaxPower()));
+        int newFrontRightTarget = frontRightDrive.getCurrentPosition() + (int)(ticks * (wheelsPowers.getFrontRight()/ wheelsPowers.getMaxPower()));
+        int newBackLeftTarget = backLeftDrive.getCurrentPosition() + (int)(ticks * (wheelsPowers.getBackLeft()/ wheelsPowers.getMaxPower()));
+        int newBackRightTarget = backRightDrive.getCurrentPosition() + (int)(ticks * (wheelsPowers.getBackRight()/ wheelsPowers.getMaxPower()));
 
         opMode.telemetry.addData("front left target: " , ticks + ", " + newFrontLeftTarget);
         opMode.telemetry.addData("front right target: " , ticks + ", " + newFrontRightTarget);
@@ -338,10 +343,10 @@ public class MecanumDrive extends SubSystem {
 
         final int maxError = 25;
         while (((LinearOpMode)opMode).opModeIsActive() &&
-                (Math.abs(frontLeftDrive.getTargetPosition() - frontLeftDrive.getCurrentPosition()) < maxError ||
-                 Math.abs(frontRightDrive.getTargetPosition() - frontRightDrive.getCurrentPosition()) < maxError ||
-                 Math.abs(backLeftDrive.getTargetPosition() - backLeftDrive.getCurrentPosition()) < maxError ||
-                 Math.abs(backRightDrive.getTargetPosition() - backRightDrive.getCurrentPosition()) < maxError) ){
+                (Math.abs(frontLeftDrive.getTargetPosition() - frontLeftDrive.getCurrentPosition()) > maxError ||
+                 Math.abs(frontRightDrive.getTargetPosition() - frontRightDrive.getCurrentPosition()) > maxError ||
+                 Math.abs(backLeftDrive.getTargetPosition() - backLeftDrive.getCurrentPosition()) > maxError ||
+                 Math.abs(backRightDrive.getTargetPosition() - backRightDrive.getCurrentPosition()) > maxError) ){
             opMode.telemetry.addData("front left: " ,newFrontLeftTarget + " , " + frontLeftDrive.getCurrentPosition() + ", power: " + frontLeftDrive.getPower());
             opMode.telemetry.addData("front right: " ,newFrontRightTarget + " , " + frontRightDrive.getCurrentPosition() + ", power: " + frontRightDrive.getPower());
             opMode.telemetry.addData("rear left: " ,newBackLeftTarget + " , " + backLeftDrive.getCurrentPosition() + ", power: " + backLeftDrive.getPower());

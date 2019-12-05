@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.controller.Controller;
 
 public class Intake extends SubSystem {
     public enum RampAngle {
-        ANGLE_UP(80), ANGLE_DOWN(160), UNDER_BRIDGE(130);
+        ANGLE_UP(80), ANGLE_DOWN(170), UNDER_BRIDGE(130);
         private double angle;
         //TODO: find integer "tickPerDegree"
         private double tickPerDegree = 12.711;
@@ -72,13 +72,13 @@ public class Intake extends SubSystem {
         if (driver.rightBumper.onRealese() || driver.leftBumper.onRealese()) {
             getReadyToCollect();
         }*/
-        if (operator.leftBumper.isPressed()) {
+        if(operator.leftBumper.onClick()){
+            moveRamp(RampAngle.ANGLE_DOWN);
             collectStone();
+        }
+        if (operator.leftBumper.isPressed()) {
             if (rampDistanceSensor.getDistance(DistanceUnit.CM) < 10) {
                moveRamp(RampAngle.ANGLE_UP);
-            }
-            else{
-                moveRamp(RampAngle.ANGLE_DOWN);
             }
         }
         else if (operator.leftBumper.onRealese()){
@@ -98,12 +98,7 @@ public class Intake extends SubSystem {
         if (driver.a.onClick() || stoneArmDistanceSensor.getDistance(DistanceUnit.CM) < 10) {
             moveRamp(RampAngle.ANGLE_DOWN);
         }*/
-        if (operator.a.onClick()) {
-            openGate();
-        }
-        if (operator.y.onClick()) {
-            closeGate();
-        }
+
         opMode.telemetry.addData("Target: ", rampAngle.getTargetPosition());
         opMode.telemetry.addData("Angle: ", rampAngle.getCurrentPosition());
     }
