@@ -169,10 +169,10 @@ public class MecanumDrive extends SubSystem {
         backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -295,17 +295,18 @@ public class MecanumDrive extends SubSystem {
         backRightDrive.setPower(0);
 
         // Turn off RUN_TO_POSITION
-        frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void driveByEncoder(double distant, double angle, double speed){
         Motion motion = new Motion(Math.abs(speed), Math.toRadians(angle), 0);
 
         Wheels wheelsPowers = motionToWheels(motion);
-        int ticks = (int)(distant / Math.sin(Math.PI/4) * COUNTS_PER_CM);
+        int ticks = (int)(distant * COUNTS_PER_CM);
+        //int ticks = (int)(distant / Math.cos(Math.PI/4) * COUNTS_PER_CM);
 
         int newFrontLeftTarget =  frontLeftDrive.getCurrentPosition() + (int)(ticks * wheelsPowers.getFrontLeft());
         int newFrontRightTarget = frontRightDrive.getCurrentPosition() + (int)(ticks * wheelsPowers.getFrontRight());
@@ -335,8 +336,12 @@ public class MecanumDrive extends SubSystem {
         backLeftDrive.setPower(Math.abs(wheelsPowers.getBackLeft()));
         backRightDrive.setPower(Math.abs(wheelsPowers.getBackRight()));
 
+        final int maxError = 25;
         while (((LinearOpMode)opMode).opModeIsActive() &&
-                (frontLeftDrive.isBusy() || frontRightDrive.isBusy() || backLeftDrive.isBusy() || backRightDrive.isBusy()) ){
+                (Math.abs(frontLeftDrive.getTargetPosition() - frontLeftDrive.getCurrentPosition()) < maxError ||
+                 Math.abs(frontRightDrive.getTargetPosition() - frontRightDrive.getCurrentPosition()) < maxError ||
+                 Math.abs(backLeftDrive.getTargetPosition() - backLeftDrive.getCurrentPosition()) < maxError ||
+                 Math.abs(backRightDrive.getTargetPosition() - backRightDrive.getCurrentPosition()) < maxError) ){
             opMode.telemetry.addData("front left: " ,newFrontLeftTarget + " , " + frontLeftDrive.getCurrentPosition() + ", power: " + frontLeftDrive.getPower());
             opMode.telemetry.addData("front right: " ,newFrontRightTarget + " , " + frontRightDrive.getCurrentPosition() + ", power: " + frontRightDrive.getPower());
             opMode.telemetry.addData("rear left: " ,newBackLeftTarget + " , " + backLeftDrive.getCurrentPosition() + ", power: " + backLeftDrive.getPower());
@@ -352,10 +357,10 @@ public class MecanumDrive extends SubSystem {
         backRightDrive.setPower(0);
 
         // Turn off RUN_TO_POSITION
-        frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
     }
 

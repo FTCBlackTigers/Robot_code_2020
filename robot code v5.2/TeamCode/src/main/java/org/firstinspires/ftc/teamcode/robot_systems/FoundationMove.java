@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.controller.Controller;
 
 public class FoundationMove extends SubSystem {
     Servo foundServo;
-    final double UP_POP = 0.6;
+    final double UP_POS = 0.6;
     final double DOWN_POS = 0;
 
     @Override
@@ -28,7 +28,7 @@ public class FoundationMove extends SubSystem {
         }
     }
     public void up() {
-        foundServo.setPosition(UP_POP);
+        foundServo.setPosition(UP_POS);
     }
     public void down() {
         foundServo.setPosition(DOWN_POS);

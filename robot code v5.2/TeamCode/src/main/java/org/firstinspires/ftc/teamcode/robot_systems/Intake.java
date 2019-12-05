@@ -48,11 +48,11 @@ public class Intake extends SubSystem {
         rampDistanceSensor = hardwareMap.get(DistanceSensor.class, "rampDistanceSensor");
         stoneArmDistanceSensor = hardwareMap.get(DistanceSensor.class, "sensor stone");
 
+        rampAngle.setDirection(DcMotorSimple.Direction.REVERSE);
         gateServo.setDirection(Servo.Direction.FORWARD);
 
         rampAngle.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rampAngle.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rampAngle.setDirection(DcMotorSimple.Direction.REVERSE);
 
         closeGate();
     }
