@@ -10,6 +10,7 @@ public class FoundationMove extends SubSystem {
     Servo foundServo;
     final double UP_POS = 0.6;
     final double DOWN_POS = 0;
+    final double GRAB_STONE = 0.5;
 
     @Override
     public void init(HardwareMap hardwareMap, OpMode opMode) {
@@ -33,4 +34,5 @@ public class FoundationMove extends SubSystem {
     public void down() {
         foundServo.setPosition(DOWN_POS);
     }
+    public void grab() { foundServo.setPosition(GRAB_STONE);}
 }

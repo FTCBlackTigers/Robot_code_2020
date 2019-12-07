@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.teleops;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -9,6 +10,7 @@ import org.firstinspires.ftc.teamcode.robot_systems.MecanumDrive;
 
 
 @TeleOp(name = "mecanum drive", group = "teleop")
+@Disabled
 public class MecanumTeleop extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
     Controller driver = new Controller();

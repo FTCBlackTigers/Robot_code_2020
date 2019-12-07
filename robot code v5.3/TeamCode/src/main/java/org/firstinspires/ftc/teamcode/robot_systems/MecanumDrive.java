@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.utils.BT_Gyro;
+import org.firstinspires.ftc.teamcode.utils.GlobalVariables;
 import org.firstinspires.ftc.teamcode.utils.TurnPIDController;
 import org.firstinspires.ftc.teamcode.controller.Controller;
 
@@ -143,7 +144,7 @@ public class MecanumDrive extends SubSystem {
 
     private DcMotor frontLeftDrive, frontRightDrive, backLeftDrive, backRightDrive;
 
-    private BT_Gyro gyro = new BT_Gyro();
+    public BT_Gyro gyro = new BT_Gyro();
     private TurnPIDController turnPID = null;
 
     //TODO: check the numbers
@@ -156,14 +157,13 @@ public class MecanumDrive extends SubSystem {
     public void init(HardwareMap hardwareMap, OpMode opMode){
         this.opMode = opMode;
 
-        turnPID = new TurnPIDController(1, 0, 0, 2, this.opMode);
+        turnPID = new TurnPIDController(0.0072, 0.000019, 0.000025, 3, this.opMode);
 
         frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftDrive");
         frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive");
         backLeftDrive = hardwareMap.get(DcMotor.class, "backLeftDrive");
         backRightDrive = hardwareMap.get(DcMotor.class, "backRightDrive");
 
-        //TODO: check the dirs
         frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -202,7 +202,7 @@ public class MecanumDrive extends SubSystem {
             motion.thetaD =  Math.toRadians(90);
         }
         else{
-            motion = joystickToMotion(driver, gyro.getAngle());
+            motion = joystickToMotion(driver, gyro.getAngle()+ GlobalVariables.getEndAutoRobotAngle());
         }
         if (driver.leftTrigger.isPressed()){
             motion.vD *= 0.5;
@@ -306,7 +306,7 @@ public class MecanumDrive extends SubSystem {
         backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    public void driveByEncoder(double distant, double angle, double speed){
+    public void driveByEncoder(double distant, double angle, double speed, double timeoutS){
         Motion motion = new Motion(Math.abs(speed), Math.toRadians(angle), 0);
 
         Wheels wheelsPowers = motionToWheels(motion);
@@ -341,12 +341,14 @@ public class MecanumDrive extends SubSystem {
         backLeftDrive.setPower(Math.abs(wheelsPowers.getBackLeft()));
         backRightDrive.setPower(Math.abs(wheelsPowers.getBackRight()));
 
+        double timeToStop = this.opMode.getRuntime() + timeoutS;
         final int maxError = 25;
-        while (((LinearOpMode)opMode).opModeIsActive() &&
-                (Math.abs(frontLeftDrive.getTargetPosition() - frontLeftDrive.getCurrentPosition()) > maxError ||
-                 Math.abs(frontRightDrive.getTargetPosition() - frontRightDrive.getCurrentPosition()) > maxError ||
-                 Math.abs(backLeftDrive.getTargetPosition() - backLeftDrive.getCurrentPosition()) > maxError ||
-                 Math.abs(backRightDrive.getTargetPosition() - backRightDrive.getCurrentPosition()) > maxError) ){
+        boolean frontLeftisBusy = (Math.abs(frontLeftDrive.getTargetPosition() - frontLeftDrive.getCurrentPosition()) > maxError); //&& (Math.abs(frontLeftDrive.getPower())>0);
+        boolean frontRightisBusy =(Math.abs(frontRightDrive.getTargetPosition() - frontRightDrive.getCurrentPosition()) > maxError); //&& (Math.abs(frontRightDrive.getPower())>0);
+        boolean backLeftisBusy = (Math.abs(backLeftDrive.getTargetPosition() - backLeftDrive.getCurrentPosition()) > maxError); //&& (Math.abs(backLeftDrive.getPower())>0);
+        boolean backRightisBusy = (Math.abs(backRightDrive.getTargetPosition() - backRightDrive.getCurrentPosition()) > maxError); //&& (Math.abs(backRightDrive.getPower())>0);
+        while (((LinearOpMode)opMode).opModeIsActive() && (opMode.getRuntime() < timeToStop) &&
+                (frontLeftisBusy || frontRightisBusy || backLeftisBusy || backRightisBusy) ){
             opMode.telemetry.addData("front left: " ,newFrontLeftTarget + " , " + frontLeftDrive.getCurrentPosition() + ", power: " + frontLeftDrive.getPower());
             opMode.telemetry.addData("front right: " ,newFrontRightTarget + " , " + frontRightDrive.getCurrentPosition() + ", power: " + frontRightDrive.getPower());
             opMode.telemetry.addData("rear left: " ,newBackLeftTarget + " , " + backLeftDrive.getCurrentPosition() + ", power: " + backLeftDrive.getPower());

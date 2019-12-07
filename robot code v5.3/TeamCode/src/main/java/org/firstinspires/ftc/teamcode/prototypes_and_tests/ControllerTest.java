@@ -39,7 +39,7 @@ import org.firstinspires.ftc.teamcode.controller.Controller;
  * Demonstrates empty OpMode
  */
 @TeleOp(name = "ControllerTest", group = "Concept")
-//@Disabled
+@Disabled
 public class ControllerTest extends OpMode {
 
 

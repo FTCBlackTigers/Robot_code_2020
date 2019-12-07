@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.robot_systems;
 
 import android.telephony.euicc.DownloadableSubscription;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -11,10 +12,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.controller.Controller;
+import org.firstinspires.ftc.teamcode.utils.GlobalVariables;
 
 public class Intake extends SubSystem {
     public enum RampAngle {
-        ANGLE_UP(80), ANGLE_DOWN(170), UNDER_BRIDGE(130);
+        ANGLE_UP(95), ANGLE_DOWN(180), UNDER_BRIDGE(180);
         private double angle;
         //TODO: find integer "tickPerDegree"
         private double tickPerDegree = 12.711;
@@ -29,7 +31,7 @@ public class Intake extends SubSystem {
     }
 
     DcMotor intakeMotor;
-    DcMotor rampAngle;
+    public DcMotor rampAngle;
     Servo gateServo;
     DistanceSensor rampDistanceSensor;
     DistanceSensor stoneArmDistanceSensor;
@@ -92,6 +94,15 @@ public class Intake extends SubSystem {
         else if (operator.rightStickY.onRealese()){
             rampAngle.setPower(0);
         }
+        if (operator.leftTrigger.isPressed()){
+            collectStone();
+        }
+        else if (operator.rightTrigger.isPressed()){
+            reversIntake();
+        }
+        else if (operator.leftTrigger.onRealese() || operator.rightTrigger.onRealese()){
+            intakeMotor.setPower(0);
+        }
         /*if (driver.b.onClick() || rampDistanceSensor.getDistance(DistanceUnit.CM) < 10) {
             moveRamp(RampAngle.ANGLE_UP);
         }
@@ -118,7 +129,7 @@ public class Intake extends SubSystem {
     }
 
     public void moveRamp(RampAngle target) {
-        rampAngle.setTargetPosition(target.getAngleInTicks());
+        rampAngle.setTargetPosition(target.getAngleInTicks()- GlobalVariables.endAutoRampEncoder);
         rampAngle.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rampAngle.setPower(Math.abs(RAMP_POWER));
     }
@@ -136,15 +147,23 @@ public class Intake extends SubSystem {
         if(operator.y.isPressed()){
             closeGate();
         }
-        if(driver.rightBumper.isPressed()){
+        if(operator.leftTrigger.isPressed()){
             collectStone();
         }
-        else if(driver.leftBumper.isPressed()){
+        else if(operator.rightTrigger.isPressed()){
             reversIntake();
         }
         else {
             intakeMotor.setPower(0);
         }
+    }
+    public void moveRampAuto (RampAngle target){
+        moveRamp(target);
+        while (Math.abs(rampAngle.getTargetPosition() - rampAngle.getCurrentPosition()) > 50 && ((LinearOpMode)opMode).opModeIsActive()){
+            opMode.telemetry.addData ("target", rampAngle.getTargetPosition()).addData("position", rampAngle.getCurrentPosition());
+        }
+        rampAngle.setPower(0);
+        rampAngle.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
 }

@@ -39,7 +39,7 @@ import java.util.TimerTask;
 
 
 @TeleOp(name = "timerTest", group = "Concept")
-//@Disabled
+@Disabled
 public class timerTest extends OpMode {
 
   private ElapsedTime runtime = new ElapsedTime();
