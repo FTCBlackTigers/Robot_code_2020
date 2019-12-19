@@ -215,11 +215,14 @@ public class MecanumDrive extends SubSystem {
         this.backLeftDrive.setPower(wheels.getBackLeft());
         this.backRightDrive.setPower(wheels.getBackRight());
 
-        opMode.telemetry.addData("Encoder Front Left", frontLeftDrive.getCurrentPosition());
-        opMode.telemetry.addData("Encoder Front Right", frontRightDrive.getCurrentPosition());
-        opMode.telemetry.addData("Encoder Back Left", backLeftDrive.getCurrentPosition());
-        opMode.telemetry.addData("Encoder Back Right", backRightDrive.getCurrentPosition());
+        opMode.telemetry.addLine("Drive: ");
+        opMode.telemetry.addData("\tEncoder Front Left", frontLeftDrive.getCurrentPosition());
+        opMode.telemetry.addData("\tEncoder Front Right", frontRightDrive.getCurrentPosition());
+        opMode.telemetry.addData("\tEncoder Back Left", backLeftDrive.getCurrentPosition());
+        opMode.telemetry.addData("\tEncoder Back Right", backRightDrive.getCurrentPosition());
 
+        opMode.telemetry.addData("\trobot position: ", gyro.getPosition().toString());
+        opMode.telemetry.addData("\trobot velocity: ", gyro.getVelocity().toString());
     }
 
 
