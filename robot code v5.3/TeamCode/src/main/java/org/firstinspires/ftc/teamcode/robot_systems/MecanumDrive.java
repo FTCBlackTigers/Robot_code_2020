@@ -185,6 +185,8 @@ public class MecanumDrive extends SubSystem {
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         gyro.init(hardwareMap);
+        //gyro.start();
+        //opMode.telemetry.addLine("gyro started");
     }
 
     public void teleopMotion(Controller driver, Controller operator){
@@ -221,8 +223,9 @@ public class MecanumDrive extends SubSystem {
         opMode.telemetry.addData("\tEncoder Back Left", backLeftDrive.getCurrentPosition());
         opMode.telemetry.addData("\tEncoder Back Right", backRightDrive.getCurrentPosition());
 
-        opMode.telemetry.addData("\trobot position: ", gyro.getPosition().toString());
+        /*opMode.telemetry.addData("\trobot position: ", gyro.getPosition().toString());
         opMode.telemetry.addData("\trobot velocity: ", gyro.getVelocity().toString());
+        opMode.telemetry.addData("\trobot gravity: ", gyro.getGravity().toString());*/
     }
 
 

@@ -27,11 +27,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.prototypes_and_tests;
+package org.firstinspires.ftc.teamcode.utils;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -52,9 +53,11 @@ import java.util.List;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@TeleOp(name = "SkystoneDetection", group = "Concept")
-@Disabled
-public class SkystoneDetection extends LinearOpMode {
+public class SkystoneDetection {
+    public enum SkystonePos{
+        LEFT, CENTER, RIGHT, NONE
+    }
+    public static final double WAITFORDETECTION = 3;
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
@@ -86,89 +89,74 @@ public class SkystoneDetection extends LinearOpMode {
      * Detection engine.
      */
     private TFObjectDetector tfod;
-
-    @Override
-    public void runOpMode() {
-        // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
-        // first.
-        initVuforia();
-
+    public void init(HardwareMap hardwareMap){
+        initVuforia(hardwareMap);
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
-            initTfod();
-        } else {
-            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
+            initTfod(hardwareMap);
         }
-
-        /**
-         * Activate TensorFlow Object Detection before we wait for the start command.
-         * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
-         **/
         if (tfod != null) {
             tfod.activate();
         }
-
-        /** Wait for the game to begin */
-        telemetry.addData(">", "Press Play to start op mode");
-        telemetry.update();
-        waitForStart();
-
-        if (opModeIsActive()) {
-            while (opModeIsActive()) {
-                if (tfod != null) {
-                    // getUpdatedRecognitions() will return null if no new information is available since
-                    // the last time that call was made.
-                    List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-                    if (updatedRecognitions != null) {
-                      telemetry.addData("# Object Detected", updatedRecognitions.size());
-
-                      // step through the list of recognitions and display boundary info.
-                      int i = 0;
-                      for (Recognition recognition : updatedRecognitions) {
-                        telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-                        telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
-                                          recognition.getLeft(), recognition.getTop());
-                        telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
-                                recognition.getRight(), recognition.getBottom());
-                      }
-                      telemetry.update();
+    }
+    public SkystonePos getSkystonePos() {
+        if (tfod != null) {
+            // getUpdatedRecognitions() will return null if no new information is available since
+            // the last time that call was made.
+            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+            if (updatedRecognitions != null) {
+                //telemetry.addData("# Object Detected", updatedRecognitions.size());
+                if (updatedRecognitions.size() == 2) {
+                    if (updatedRecognitions.get(0).getLabel() == LABEL_FIRST_ELEMENT && updatedRecognitions.get(1).getLabel() == LABEL_FIRST_ELEMENT) {
+                        return SkystonePos.RIGHT;
+                    } else {
+                        if (updatedRecognitions.get(0).getLabel() == LABEL_SECOND_ELEMENT) {
+                            if (updatedRecognitions.get(0).getLeft() > updatedRecognitions.get(1).getLeft()) {
+                                return SkystonePos.CENTER;
+                            } else {
+                                return SkystonePos.LEFT;
+                            }
+                        } else {
+                            if (updatedRecognitions.get(1).getLeft() > updatedRecognitions.get(0).getLeft()) {
+                                return SkystonePos.CENTER;
+                            } else {
+                                return SkystonePos.LEFT;
+                            }
+                        }
                     }
                 }
             }
         }
-
-        if (tfod != null) {
-            tfod.shutdown();
-        }
+        return SkystonePos.NONE;
     }
 
-    /**
-     * Initialize the Vuforia localization engine.
+/**
+ * Initialize the Vuforia localization engine.
+ */
+private void initVuforia(HardwareMap hardwareMap) {
+    /*
+     * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
      */
-    private void initVuforia() {
-        /*
-         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
-         */
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+    VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
-        parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        //  parameters.cameraDirection = CameraDirection.FRONT;
-        parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
+    parameters.vuforiaLicenseKey = VUFORIA_KEY;
+    //  parameters.cameraDirection = CameraDirection.FRONT;
+    parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
 
-        //  Instantiate the Vuforia engine
-        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+    //  Instantiate the Vuforia engine
+    vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
-        // Loading trackables is not necessary for the TensorFlow Object Detection engine.
-    }
+    // Loading trackables is not necessary for the TensorFlow Object Detection engine.
+}
 
-    /**
-     * Initialize the TensorFlow Object Detection engine.
-     */
-    private void initTfod() {
-        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
-            "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.8;
-        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
-    }
+/**
+ * Initialize the TensorFlow Object Detection engine.
+ */
+private void initTfod(HardwareMap hardwareMap){
+    int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+        "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+    TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+    tfodParameters.minimumConfidence = 0.8;
+    tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+    tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+}
 }
