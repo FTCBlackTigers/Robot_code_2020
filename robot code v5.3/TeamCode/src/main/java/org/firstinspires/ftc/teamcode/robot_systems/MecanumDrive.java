@@ -104,7 +104,7 @@ public class MecanumDrive extends SubSystem {
     }
 
     public Motion joystickToMotion(Controller gamePad, double currentAngle){
-        final double JOYSTICK_THRESHOLD = 0.2;
+        final double JOYSTICK_THRESHOLD = 0;
         double leftX = gamePad.leftStickX.getValue();
         double leftY = gamePad.leftStickY.getValue();
         double rightX = gamePad.rightStickX.getValue();
