@@ -8,10 +8,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.controller.Controller;
 import org.firstinspires.ftc.teamcode.robot_systems.SubSystem;
 
-public class Intake2<power> extends SubSystem {
-    DcMotor leftMotor;
-    DcMotor rightMotor;
-    final double POWER = 0.5;
+public class Intake2 extends SubSystem {
+   private DcMotor leftMotor;
+   private DcMotor rightMotor;
+   private final double POWER = 0.5;
     @Override
     public void init(HardwareMap hardwareMap, OpMode opMode) {
         this.opMode = opMode;
@@ -46,3 +46,4 @@ public class Intake2<power> extends SubSystem {
         rightMotor.setPower(0);
     }
 }
+
