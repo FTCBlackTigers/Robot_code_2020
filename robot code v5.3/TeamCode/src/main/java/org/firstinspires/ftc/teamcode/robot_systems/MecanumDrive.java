@@ -207,8 +207,8 @@ public class MecanumDrive extends SubSystem {
             motion = joystickToMotion(driver, gyro.getAngle()+ GlobalVariables.getEndAutoRobotAngle());
         }
         if (driver.leftTrigger.isPressed()){
-            motion.vD *= 0.5;
-            motion.vTheta *= 0.5;
+            motion.vD *= 0.3;
+            motion.vTheta *= 0.3;
         }
 
         Wheels wheels = motionToWheels(motion);

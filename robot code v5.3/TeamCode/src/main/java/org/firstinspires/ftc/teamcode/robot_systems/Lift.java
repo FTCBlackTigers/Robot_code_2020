@@ -98,6 +98,9 @@ public class Lift extends SubSystem{
             currenPositionLengh= Range.clip(currenPositionLengh,0, positions[0].length-1);
             moveLift(positions[currenPositionHeight][currenPositionLengh]);
         }
+        opMode.telemetry.addLine("LIFT");
+        opMode.telemetry.addData("\ttarget", liftMotor.getTargetPosition());
+        opMode.telemetry.addData("\tcurrent position", liftMotor.getCurrentPosition());
     }
     public void manualTeleop(Controller operator){
         if(operator.a.onClick()){
