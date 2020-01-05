@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.controller.Controller;
 
 @TeleOp(name = "ServoMovement", group = "Concept")
-@Disabled
 public class ServoMovememt extends OpMode {
     Servo servo =null;
     Controller controller = new Controller();

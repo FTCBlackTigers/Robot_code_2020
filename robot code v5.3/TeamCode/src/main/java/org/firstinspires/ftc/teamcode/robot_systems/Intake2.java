@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.robot_systems.SubSystem;
 public class Intake2 extends SubSystem {
    private DcMotor leftMotor;
    private DcMotor rightMotor;
-   private final double POWER = 0.5;
+   private final double POWER = 1;
     @Override
     public void init(HardwareMap hardwareMap, OpMode opMode) {
         this.opMode = opMode;
@@ -23,10 +23,10 @@ public class Intake2 extends SubSystem {
 
     @Override
     public void teleopMotion(Controller driver, Controller operator) {
-        if (driver.leftBumper.isPressed()){
+        if (operator.leftTrigger.isPressed()){
             take();
         }
-        else if (driver.rightBumper.isPressed()){
+        else if (operator.rightTrigger.isPressed()){
             reverse();
         }
         else{
