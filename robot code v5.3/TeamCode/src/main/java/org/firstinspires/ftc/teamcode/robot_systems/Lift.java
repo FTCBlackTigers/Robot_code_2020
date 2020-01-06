@@ -10,7 +10,8 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.controller.Controller;
 import org.firstinspires.ftc.teamcode.utils.GlobalVariables;
 
-import java.awt.font.NumericShaper;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Lift extends SubSystem{
     enum LiftPosition{
@@ -20,27 +21,30 @@ public class Lift extends SubSystem{
         private double height;
         //TODO CHACK tickperCM
         private double tickPerCM =1;
-        private double servoPos;
-        private LiftPosition (double height, double servoPos) {
+        private double servoRotation;
+        private int servoRotateTime = 1500;
+        private LiftPosition (double height, double servoRotation) {
             this.height = height;
-            this.servoPos=servoPos;
+            this.servoRotation = servoRotation;
         }
         public int getHeight() {
              return (int) (height*tickPerCM);
 
         }
 
-        public double getServoPos() {
-            return servoPos;
+        public int getServoRotation() {
+            return(int) (servoRotation * servoRotateTime);
         }
     }
 
     DcMotor liftMotor ;
     Servo liftServo;
     Servo grabServo;
+    int servoPosition = 0;
     private  final double POWER=1;
-    private final double GRAB_POS=0;
-    private final double RELEASED_POS =0;
+    private final double GRAB_POS=2;
+    private final double RELEASED_POS =0.5;
+    final Timer t = new java.util.Timer();
 
     LiftPosition[][]positions = {{LiftPosition.LEVEL1,LiftPosition.LEVEL1_LONG},
                                   {LiftPosition.LEVEL2,LiftPosition.LEVEL2_LONG},
@@ -109,10 +113,13 @@ public class Lift extends SubSystem{
         if(operator.b.onClick()){
             closeGrabServo();
         }
-        if(operator.rightStickY.isPressed()){
-            liftServo.setPosition(liftServo.getPosition()+0.05*Math.signum(operator.rightStickY.getValue()));
-
+        if(operator.rightStickY.getValue()>0){
+            liftServo.setPosition(1);
         }
+        else if(operator.rightStickY.getValue()<0){
+            liftServo.setPosition(0);
+        }
+        else liftServo.setPosition(0.5);
         liftMotor.setPower(operator.leftStickY.getValue());
     }
     public void closeGrabServo(){
@@ -121,10 +128,33 @@ public class Lift extends SubSystem{
     public void openGrabServo (){
         grabServo.setPosition(RELEASED_POS);
     }
-    public void moveLift(LiftPosition position){
-         liftServo.setPosition(position.getServoPos());
+    public void moveLift(LiftPosition position) {
+        if (position.getServoRotation() > servoPosition) {
+            servoRotateLeft(position.getServoRotation() - servoPosition);
+        }
+        else if (position.getServoRotation() < servoPosition) {
+            servoRotateRight(  servoPosition - position.getServoRotation());
+        }
+        liftServo.setPosition(position.getServoRotation());
         liftMotor.setTargetPosition(position.getHeight() - GlobalVariables.endAutoArmEncoder);
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftMotor.setPower(Math.abs(POWER));
+        servoPosition = position.getServoRotation();
+    }
+    public void servoRotateLeft(int time){
+        liftServo.setPosition(1);
+        servoRotateStop(time);
+    }
+    public void servoRotateRight(int time){
+        liftServo.setPosition(0);
+        servoRotateStop(time);
+    }
+    public void  servoRotateStop(int time){
+        t.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                liftServo.setPosition(0.5);
+            }
+        }, time);
     }
 }

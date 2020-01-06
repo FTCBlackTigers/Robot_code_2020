@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode.prototypes_and_tests;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.Timer;
@@ -39,14 +40,33 @@ import java.util.TimerTask;
 
 
 @TeleOp(name = "timerTest", group = "Concept")
-@Disabled
+//@Disabled
 public class timerTest extends OpMode {
+  public void rotateLeft(int time){
+    servo.setPosition(1);
+    rotateStop(time);
+  }
+  public void rotateRight(int time){
+    servo.setPosition(0);
+    rotateStop(time);
+  }
+  public void  rotateStop(int time){
+    t.schedule(new TimerTask() {
+      @Override
+      public void run() {
+        telemetry.addLine("calling from the delay").addData("time after", getRuntime());
+        servo.setPosition(0.5);
+      }
+    }, time);
+  }
 
   private ElapsedTime runtime = new ElapsedTime();
   final Timer t = new java.util.Timer();
+  Servo servo;
 
   @Override
   public void init() {
+    servo = hardwareMap.get(Servo.class, "servo");
     telemetry.addData("Status", "Initialized");
     telemetry.addData("time start", getRuntime());
     t.schedule(new TimerTask() {
@@ -75,15 +95,11 @@ public class timerTest extends OpMode {
 
     if(gamepad1.a){
       telemetry.addData("a is pressed", getRuntime());
-      t.schedule(new TimerTask() {
-        @Override
-        public void run() {
-          telemetry.addData("a pressing daley task", getRuntime());
-        }
-      }, 2000);
+     rotateLeft(750);
     }
     if(gamepad1.b){
-      //t.cancel();
+      rotateRight(750);
     }
+    telemetry.addData( "servo position",servo.getPosition());
   }
 }
