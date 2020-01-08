@@ -22,8 +22,8 @@ public class ManualTeleop extends OpMode {
         driver.setValues(gamepad1);
         operator.setValues(gamepad2);
         robot.mecanumDrive.teleopMotion(driver, operator);
-        robot.intake.manualTeleop(driver, operator );
-        robot.movingStoneArm.manualTeleop(driver, operator);
+        //robot.intake.manualTeleop(driver, operator );
+        //robot.movingStoneArm.manualTeleop(driver, operator);
         robot.foundationMove.teleopMotion(driver, operator);
         driver.setPrevValues();
         operator.setPrevValues();

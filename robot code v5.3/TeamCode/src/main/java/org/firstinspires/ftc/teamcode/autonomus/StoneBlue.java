@@ -20,46 +20,63 @@ public class StoneBlue extends LinearOpMode {
         GlobalVariables.reset();
         skystoneDetection.init(hardwareMap);
         robot.init(hardwareMap, this);
-        /*while(!isStarted() && !isStopRequested()){
+        while(!isStarted() && !isStopRequested()){
             skystonePos= skystoneDetection.getSkystonePos();
             telemetry.addData("skystone", skystonePos);
             telemetry.update();
-        }*/
-        waitForStart();
-        robot.mecanumDrive.driveByEncoder(20,0,1,1);
+        }
+        //waitForStart();
+        //robot.mecanumDrive.driveByEncoder(20,0,0.3,1);
         double timeToStop = this.getRuntime() + SkystoneDetection.WAITFORDETECTION;
         while(skystonePos ==SkystoneDetection.SkystonePos.NONE && timeToStop> getRuntime() && opModeIsActive()){
             skystonePos = skystoneDetection.getSkystonePos();
             telemetry.addData("skystone", skystonePos);
             telemetry.update();
         }
+        robot.mecanumDrive.driveByEncoder(15,0,1,1);
+        robot.intake.take();
         telemetry.addData("skystone:" ,skystonePos);
+        int skystoneAddDistance = 0;
+        int rightAddDistance = 0;
         switch (skystonePos){
             case NONE:
             case LEFT:
-                robot.mecanumDrive.driveByEncoder(50,0,0.7,2);
+                robot.mecanumDrive.driveByEncoder(70,-40,0.7,2);
+                robot.mecanumDrive.turnByGyroAbsolut(-20,2);
                 break;
             case CENTER:
-                robot.mecanumDrive.driveByEncoder(100,40,0.7,2);
+                skystoneAddDistance = 25;
+                robot.mecanumDrive.driveByEncoder(30,0,0.7,2);
+                robot.mecanumDrive.turnByGyroAbsolut(-30,2);
                 break;
             case RIGHT:
-                robot.mecanumDrive.driveByEncoder(120,60,0.7,2);
+                skystoneAddDistance = 35;
+                rightAddDistance = 15;
+                robot.mecanumDrive.driveByEncoder(80,30,0.7,2);
+                robot.mecanumDrive.turnByGyroAbsolut(-30,2);
                 break;
-
-
         }
-        /*robot.mecanumDrive.driveByEncoder(80,180,0.7,2.5);
-        robot.intake.moveRampAuto(Intake.RampAngle.ANGLE_DOWN);
-        robot.movingStoneArm.moveAngleAuto(MovingStoneArm.ArmAngle.AUTO_GRAB);
-        robot.foundationMove.grab();
-        robot.mecanumDrive.driveByEncoder(25,0,0.7,1);
-        robot.mecanumDrive.turnByGyroAbsolut(90,3);
-        robot.mecanumDrive.driveByEncoder(150,180,0.7,3);
-        robot.foundationMove.up();
-        robot.movingStoneArm.moveAngleAuto(MovingStoneArm.ArmAngle.LOW_POS);
-        robot.mecanumDrive.driveByEncoder(80,0,0.7,2);*/
+        robot.mecanumDrive.driveByEncoder(50,0,0.3,2);
+        robot.intake.stop();
+        robot.mecanumDrive.driveByEncoder(60,180,0.7,2);
+        robot.mecanumDrive.turnByGyroAbsolut(90,2);
+        robot.mecanumDrive.driveByEncoder(80 + skystoneAddDistance,0,1,2);
+        robot.intake.reverse();
+        sleep(500);
+        robot.mecanumDrive.driveByEncoder(145 + skystoneAddDistance,180,1,2);
+        robot.intake.take();
+        robot.mecanumDrive.turnByGyroAbsolut(-30,2);
+        robot.mecanumDrive.driveByEncoder(50,0,0.3,2);
+        robot.mecanumDrive.driveByEncoder(70,180,0.7,2);
+        robot.intake.stop();
+        robot.mecanumDrive.turnByGyroAbsolut(90,2);
+        robot.mecanumDrive.driveByEncoder(150 + skystoneAddDistance - rightAddDistance,0,1,2);
+        robot.intake.reverse();
+        sleep(500);
+        robot.mecanumDrive.driveByEncoder(50,180,0.7,2);
+        robot.intake.stop();
         GlobalVariables.setEndAutoRobotAngle(robot.mecanumDrive.gyro.getAngle()+180);
-        GlobalVariables.endAutoArmEncoder = robot.movingStoneArm.motorAngle.getCurrentPosition();
-        GlobalVariables.endAutoRampEncoder = robot.intake.rampAngle.getCurrentPosition();
+       // GlobalVariables.endAutoArmEncoder = robot.movingStoneArm.motorAngle.getCurrentPosition();
+        //GlobalVariables.endAutoRampEncoder = robot.intake.rampAngle.getCurrentPosition();
     }
 }

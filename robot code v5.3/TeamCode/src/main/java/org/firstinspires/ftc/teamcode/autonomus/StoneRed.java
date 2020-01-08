@@ -13,12 +13,12 @@ public class StoneRed extends LinearOpMode {
     Robot robot = new Robot();
 
     @Override
-    public void runOpMode() throws InterruptedException {
+   public void runOpMode() throws InterruptedException {
         GlobalVariables.reset();
         robot.init(hardwareMap, this);
         waitForStart();
 
-        robot.mecanumDrive.driveByEncoder(80,180,0.7,2.5);
+        /*robot.mecanumDrive.driveByEncoder(80,180,0.7,2.5);
         robot.intake.moveRampAuto(Intake.RampAngle.ANGLE_DOWN);
         robot.movingStoneArm.moveAngleAuto(MovingStoneArm.ArmAngle.AUTO_GRAB);
         robot.foundationMove.grab();
@@ -30,6 +30,6 @@ public class StoneRed extends LinearOpMode {
         robot.mecanumDrive.driveByEncoder(80,0,0.7,2);
         GlobalVariables.setEndAutoRobotAngle(robot.mecanumDrive.gyro.getAngle()+180);
         GlobalVariables.endAutoArmEncoder = robot.movingStoneArm.motorAngle.getCurrentPosition();
-        GlobalVariables.endAutoRampEncoder = robot.intake.rampAngle.getCurrentPosition();
+        GlobalVariables.endAutoRampEncoder = robot.intake.rampAngle.getCurrentPosition();*/
     }
 }
