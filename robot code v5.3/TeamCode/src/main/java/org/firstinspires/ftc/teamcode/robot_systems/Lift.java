@@ -41,16 +41,16 @@ public class Lift extends SubSystem{
     Servo liftServo;
     Servo grabServo;
     int servoPosition = 0;
-    private  final double POWER=1;
-    private final double GRAB_POS=2;
-    private final double RELEASED_POS =0.5;
-    final Timer t = new java.util.Timer();
+    private final double POWER = 1;
+    private final double GRAB_POS = 0.2;
+    private final double RELEASED_POS = 0.1;
+    private final Timer t = new java.util.Timer();
 
     LiftPosition[][]positions = {{LiftPosition.LEVEL1,LiftPosition.LEVEL1_LONG},
                                   {LiftPosition.LEVEL2,LiftPosition.LEVEL2_LONG},
                                  {LiftPosition.LEVEL3,LiftPosition.LEVEL3_LONG}};
-    private int currenPositionHeight=-1;
-    private int currenPositionLengh=-1;
+    private int currenPositionHeight = -1;
+    private int currenPositionLengh = -1;
 
     @Override
     public void init(HardwareMap hardwareMap, OpMode opMode) {
@@ -59,8 +59,8 @@ public class Lift extends SubSystem{
         liftServo = hardwareMap.get(Servo.class, "liftServo");
         grabServo = hardwareMap.get(Servo.class, "grabServo");
         liftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-       liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-       liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     @Override
