@@ -29,7 +29,6 @@ public class Lift extends SubSystem{
         }
         public int getHeight() {
              return (int) (height*tickPerCM);
-
         }
 
         public int getServoRotation() {
@@ -49,8 +48,8 @@ public class Lift extends SubSystem{
     LiftPosition[][]positions = {{LiftPosition.LEVEL1,LiftPosition.LEVEL1_LONG},
                                   {LiftPosition.LEVEL2,LiftPosition.LEVEL2_LONG},
                                  {LiftPosition.LEVEL3,LiftPosition.LEVEL3_LONG}};
-    private int currenPositionHeight = -1;
-    private int currenPositionLengh = -1;
+    private int currentPositionHeight = -1;
+    private int currentPositionLength = -1;
 
     @Override
     public void init(HardwareMap hardwareMap, OpMode opMode) {
@@ -68,39 +67,38 @@ public class Lift extends SubSystem{
         if(operator.x.onClick()){
             openGrabServo();
             moveLift(LiftPosition.TAKE_STONE);
-            currenPositionHeight=-1;
-            currenPositionLengh=-1;
+            currentPositionHeight = -1;
+            currentPositionLength = -1;
         }
         if(operator.a.onClick()){
             openGrabServo();
-
         }
         if(operator.b.onClick()){
             closeGrabServo();
         }
         if(operator.dpadUp.onClick()){
-            currenPositionHeight++;
-            currenPositionHeight= Range.clip(currenPositionHeight,0, positions.length-1);
-            currenPositionLengh= Range.clip(currenPositionLengh,0, positions[0].length-1);
-            moveLift(positions[currenPositionHeight][currenPositionLengh]);
+            currentPositionHeight++;
+            currentPositionHeight = Range.clip(currentPositionHeight,0, positions.length-1);
+            currentPositionLength = Range.clip(currentPositionLength,0, positions[0].length-1);
+            moveLift(positions[currentPositionHeight][currentPositionLength]);
         }
         if(operator.dpadDown.onClick()){
-            currenPositionHeight--;
-            currenPositionHeight= Range.clip(currenPositionHeight,0, positions.length-1);
-            currenPositionLengh= Range.clip(currenPositionLengh,0, positions[0].length-1);
-            moveLift(positions[currenPositionHeight][currenPositionLengh]);
+            currentPositionHeight--;
+            currentPositionHeight = Range.clip(currentPositionHeight,0, positions.length-1);
+            currentPositionLength = Range.clip(currentPositionLength,0, positions[0].length-1);
+            moveLift(positions[currentPositionHeight][currentPositionLength]);
         }
         if(operator.dpadLeft.onClick()){
-            currenPositionLengh++;
-            currenPositionHeight= Range.clip(currenPositionHeight,0, positions.length-1);
-            currenPositionLengh= Range.clip(currenPositionLengh,0, positions[0].length-1);
-            moveLift(positions[currenPositionHeight][currenPositionLengh]);
+            currentPositionLength++;
+            currentPositionHeight = Range.clip(currentPositionHeight,0, positions.length-1);
+            currentPositionLength = Range.clip(currentPositionLength,0, positions[0].length-1);
+            moveLift(positions[currentPositionHeight][currentPositionLength]);
         }
         if(operator.dpadRight.onClick()){
-            currenPositionLengh--;
-            currenPositionHeight= Range.clip(currenPositionHeight,0, positions.length-1);
-            currenPositionLengh= Range.clip(currenPositionLengh,0, positions[0].length-1);
-            moveLift(positions[currenPositionHeight][currenPositionLengh]);
+            currentPositionLength--;
+            currentPositionHeight = Range.clip(currentPositionHeight,0, positions.length-1);
+            currentPositionLength = Range.clip(currentPositionLength,0, positions[0].length-1);
+            moveLift(positions[currentPositionHeight][currentPositionLength]);
         }
         opMode.telemetry.addLine("LIFT");
         opMode.telemetry.addData("\ttarget", liftMotor.getTargetPosition());

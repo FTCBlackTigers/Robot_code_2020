@@ -147,7 +147,6 @@ public class MecanumDrive extends SubSystem {
     public BT_Gyro gyro = new BT_Gyro();
     private TurnPIDController turnPID = null;
 
-    //TODO: check the numbers
     private static final double COUNTS_PER_MOTOR_REV = 28 ;
     private static final double DRIVE_GEAR_REDUCTION = 19.2 ;     // This is < 1.0 if geared UP
     private static final double WHEEL_DIAMETER_CM = 10.16 ;     // For figuring circumference

@@ -18,7 +18,7 @@ public class Intake extends SubSystem {
     public enum RampAngle {
         ANGLE_UP(95), ANGLE_DOWN(180), UNDER_BRIDGE(180);
         private double angle;
-        //TODO: find integer "tickPerDegree"
+
         private double tickPerDegree = 12.711;
 
         RampAngle(double angle) {
