@@ -3,13 +3,12 @@ package org.firstinspires.ftc.teamcode.autonomus;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.robot_systems.Intake;
 import org.firstinspires.ftc.teamcode.robot_systems.Robot;
 import org.firstinspires.ftc.teamcode.utils.GlobalVariables;
 
 @Autonomous(name = "Red foundation", group ="red")
 public class FoundationRed extends LinearOpMode {
-    Robot robot = new Robot();
+    private Robot robot = new Robot();
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -21,9 +20,9 @@ public class FoundationRed extends LinearOpMode {
         robot.mecanumDrive.driveByEncoder(10,180,0.1,2);
         robot.foundationMove.down();
         sleep(500);
-        robot.mecanumDrive.turnByGyroAbsolut(-30,3);
+        robot.mecanumDrive.turnByGyroAbsolute(-30,3);
         robot.mecanumDrive.driveByEncoder(70, 0,0.7,3);
-        robot.mecanumDrive.turnByGyroAbsolut(-90,2);
+        robot.mecanumDrive.turnByGyroAbsolute(-90,2);
         robot.mecanumDrive.driveByEncoder(40,180,0.7,2);
         robot.foundationMove.up();
         sleep(700);

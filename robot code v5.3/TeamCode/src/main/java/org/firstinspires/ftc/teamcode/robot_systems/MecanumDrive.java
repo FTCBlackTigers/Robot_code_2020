@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.controller.Controller;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 public class MecanumDrive extends SubSystem {
 
@@ -46,7 +47,7 @@ public class MecanumDrive extends SubSystem {
         private double frontRight;
         private double backLeft;
         private double backRight;
-        private double maxMag;
+        private double maxWheelPower;
 
         public double getFrontLeft() {
             return frontLeft;
@@ -82,14 +83,14 @@ public class MecanumDrive extends SubSystem {
             double minPower = Collections.min(powers);
             double maxPower = Collections.max(powers);
             double maxMag = Math.max(Math.abs(minPower), Math.abs(maxPower));
-            this.maxMag = maxMag;
+            this.maxWheelPower = maxMag;
 
             for (int i = 0; i < powers.size(); i++) {
                 powers.set(i, powers.get(i) / maxMag);
             }
         }
          public double getMaxPower(){
-            return maxMag;
+            return maxWheelPower;
          }
         /**
          * Scales the wheel powers by the given factor.
@@ -103,7 +104,7 @@ public class MecanumDrive extends SubSystem {
         }
     }
 
-    public Motion joystickToMotion(Controller gamePad, double currentAngle){
+    private Motion joystickToMotion(Controller gamePad, double currentAngle){
         final double JOYSTICK_THRESHOLD = 0;
         double leftX = gamePad.leftStickX.getValue();
         double leftY = gamePad.leftStickY.getValue();
@@ -378,7 +379,85 @@ public class MecanumDrive extends SubSystem {
         backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    public void turnByGyroAbsolut(double targetDegree, double timeS) {
+    public void driveByEncoder(double distant, double angle, double speed, double timeoutS, Callable callAction, double delayCallAction){
+        Motion motion = new Motion(Math.abs(speed), Math.toRadians(angle), 0);
+
+        Wheels wheelsPowers = motionToWheels(motion);
+        int ticks = (int)(distant * COUNTS_PER_CM);
+
+        int newFrontLeftTarget =  frontLeftDrive.getCurrentPosition() + (int)(ticks * (wheelsPowers.getFrontLeft()/ wheelsPowers.getMaxPower()));
+        int newFrontRightTarget = frontRightDrive.getCurrentPosition() + (int)(ticks * (wheelsPowers.getFrontRight()/ wheelsPowers.getMaxPower()));
+        int newBackLeftTarget = backLeftDrive.getCurrentPosition() + (int)(ticks * (wheelsPowers.getBackLeft()/ wheelsPowers.getMaxPower()));
+        int newBackRightTarget = backRightDrive.getCurrentPosition() + (int)(ticks * (wheelsPowers.getBackRight()/ wheelsPowers.getMaxPower()));
+
+        opMode.telemetry.addData("front left target: " , ticks + ", " + newFrontLeftTarget);
+        opMode.telemetry.addData("front right target: " , ticks + ", " + newFrontRightTarget);
+        opMode.telemetry.addData("rear left target: " , ticks + ", " + newBackLeftTarget);
+        opMode.telemetry.addData("rear right target: " , ticks + ", " + newBackRightTarget);
+        opMode.telemetry.update();
+
+        frontLeftDrive.setTargetPosition(newFrontLeftTarget);
+        frontRightDrive.setTargetPosition(newFrontRightTarget);
+        backLeftDrive.setTargetPosition(newBackLeftTarget);
+        backRightDrive.setTargetPosition(newBackRightTarget);
+
+        // Turn On RUN_TO_POSITION
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        // start motion.
+        frontLeftDrive.setPower(Math.abs(wheelsPowers.getFrontLeft()));
+        frontRightDrive.setPower(Math.abs(wheelsPowers.getFrontRight()));
+        backLeftDrive.setPower(Math.abs(wheelsPowers.getBackLeft()));
+        backRightDrive.setPower(Math.abs(wheelsPowers.getBackRight()));
+
+        double timeToStop = this.opMode.getRuntime() + timeoutS;
+        double callTime = this.opMode.getRuntime() + delayCallAction;
+        final int maxError = 25;
+        boolean frontLeftIsBusy = (Math.abs(frontLeftDrive.getTargetPosition() - frontLeftDrive.getCurrentPosition()) > maxError) && (Math.abs(frontLeftDrive.getPower())>0);
+        boolean frontRightIsBusy =(Math.abs(frontRightDrive.getTargetPosition() - frontRightDrive.getCurrentPosition()) > maxError) && (Math.abs(frontRightDrive.getPower())>0);
+        boolean backLeftIsBusy = (Math.abs(backLeftDrive.getTargetPosition() - backLeftDrive.getCurrentPosition()) > maxError) && (Math.abs(backLeftDrive.getPower())>0);
+        boolean backRightIsBusy = (Math.abs(backRightDrive.getTargetPosition() - backRightDrive.getCurrentPosition()) > maxError) && (Math.abs(backRightDrive.getPower())>0);
+        while (((LinearOpMode)opMode).opModeIsActive() && (opMode.getRuntime() < timeToStop) &&
+                (frontLeftIsBusy || frontRightIsBusy || backLeftIsBusy || backRightIsBusy) ){
+
+            if(opMode.getRuntime() >= callTime){
+                try {
+                    callAction.call();
+                }
+                catch (Exception ex){
+                    ex.printStackTrace();
+                }
+            }
+
+            opMode.telemetry.addData("front left: " ,newFrontLeftTarget + " , " + frontLeftDrive.getCurrentPosition() + ", power: " + frontLeftDrive.getPower());
+            opMode.telemetry.addData("front right: " ,newFrontRightTarget + " , " + frontRightDrive.getCurrentPosition() + ", power: " + frontRightDrive.getPower());
+            opMode.telemetry.addData("rear left: " ,newBackLeftTarget + " , " + backLeftDrive.getCurrentPosition() + ", power: " + backLeftDrive.getPower());
+            opMode.telemetry.addData("rear right: " ,newBackRightTarget + " , " + backRightDrive.getCurrentPosition() + ", power: " + backRightDrive.getPower());
+            opMode.telemetry.update();
+
+            frontLeftIsBusy = (Math.abs(frontLeftDrive.getTargetPosition() - frontLeftDrive.getCurrentPosition()) > maxError) && (Math.abs(frontLeftDrive.getPower())>0);
+            frontRightIsBusy =(Math.abs(frontRightDrive.getTargetPosition() - frontRightDrive.getCurrentPosition()) > maxError) && (Math.abs(frontRightDrive.getPower())>0);
+            backLeftIsBusy = (Math.abs(backLeftDrive.getTargetPosition() - backLeftDrive.getCurrentPosition()) > maxError) && (Math.abs(backLeftDrive.getPower())>0);
+            backRightIsBusy = (Math.abs(backRightDrive.getTargetPosition() - backRightDrive.getCurrentPosition()) > maxError) && (Math.abs(backRightDrive.getPower())>0);
+        }
+
+        // Stop all motion;
+        frontLeftDrive.setPower(0);
+        frontRightDrive.setPower(0);
+        backLeftDrive.setPower(0);
+        backRightDrive.setPower(0);
+
+        // Turn off RUN_TO_POSITION
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+    public void turnByGyroAbsolute(double targetDegree, double timeS) {
         turnPID.reset(targetDegree, gyro.getAngle());
         timeS += opMode.getRuntime();
 
@@ -406,6 +485,6 @@ public class MecanumDrive extends SubSystem {
         backRightDrive.setPower(0);
     }
     public void turnByGyroRelative(double degrees, double timeS) {
-        turnByGyroAbsolut(this.gyro.getAngle() + degrees, timeS);
+        turnByGyroAbsolute(this.gyro.getAngle() + degrees, timeS);
     }
 }

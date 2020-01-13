@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.utils.GlobalVariables;
 
 @Autonomous(name = "Stone Red", group ="red")
 public class StoneRed extends LinearOpMode {
-    Robot robot = new Robot();
+    private Robot robot = new Robot();
 
     @Override
    public void runOpMode() throws InterruptedException {
@@ -23,7 +23,7 @@ public class StoneRed extends LinearOpMode {
         robot.movingStoneArm.moveAngleAuto(MovingStoneArm.ArmAngle.AUTO_GRAB);
         robot.foundationMove.grab();
         robot.mecanumDrive.driveByEncoder(25,0,0.7,1);
-        robot.mecanumDrive.turnByGyroAbsolut(-90,3);
+        robot.mecanumDrive.turnByGyroAbsolute(-90,3);
         robot.mecanumDrive.driveByEncoder(150,180,0.7,3);
         robot.foundationMove.up();
         robot.movingStoneArm.moveAngleAuto(MovingStoneArm.ArmAngle.LOW_POS);
