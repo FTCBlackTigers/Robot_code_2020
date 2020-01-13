@@ -11,7 +11,6 @@ import org.firstinspires.ftc.teamcode.controller.Controller;
 import org.firstinspires.ftc.teamcode.utils.GlobalVariables;
 
 import java.util.Timer;
-import java.util.TimerTask;
 
 public class Lift extends SubSystem{
     enum LiftPosition{
@@ -20,24 +19,24 @@ public class Lift extends SubSystem{
 
         private double height;
         //TODO CHACK tickperCM
-        private double tickPerCM =1;
-        private double servoRotation;
-        private int servoRotateTime = 1500;
-        private LiftPosition (double height, double servoRotation) {
+        private double tickPerCMVertical =1;
+        private double rangeOut;
+        private int tickPerCMHorizontal = 1;
+        private LiftPosition (double height, double rangeOut) {
             this.height = height;
-            this.servoRotation = servoRotation;
+            this.rangeOut = rangeOut;
         }
         public int getHeight() {
-             return (int) (height*tickPerCM);
+             return (int) (height*tickPerCMVertical);
         }
 
-        public int getServoRotation() {
-            return(int) (servoRotation * servoRotateTime);
+        public int getRangeOut() {
+            return(int) (rangeOut * tickPerCMHorizontal);
         }
     }
 
-    DcMotor liftMotor ;
-    Servo liftServo;
+    DcMotor liftMotorVertical;
+    DcMotor liftMotorHorizontal;
     Servo grabServo;
     int servoPosition = 0;
     private final double POWER = 1;
@@ -54,12 +53,15 @@ public class Lift extends SubSystem{
     @Override
     public void init(HardwareMap hardwareMap, OpMode opMode) {
         this.opMode=opMode;
-        liftMotor = hardwareMap.get(DcMotor.class, "liftMotor");
-        liftServo = hardwareMap.get(Servo.class, "liftServo");
+        liftMotorVertical = hardwareMap.get(DcMotor.class, "liftMotorVertical");
+        liftMotorHorizontal = hardwareMap.get(DcMotor.class, "liftMotorHorizontal");
         grabServo = hardwareMap.get(Servo.class, "grabServo");
-        liftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftMotorVertical.setDirection(DcMotorSimple.Direction.FORWARD);
+        liftMotorVertical.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftMotorVertical.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftMotorHorizontal.setDirection(DcMotorSimple.Direction.FORWARD);
+        liftMotorHorizontal.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftMotorHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     @Override
@@ -101,8 +103,10 @@ public class Lift extends SubSystem{
             moveLift(positions[currentPositionHeight][currentPositionLength]);
         }
         opMode.telemetry.addLine("LIFT");
-        opMode.telemetry.addData("\ttarget", liftMotor.getTargetPosition());
-        opMode.telemetry.addData("\tcurrent position", liftMotor.getCurrentPosition());
+        opMode.telemetry.addData("\ttarget Vertical ",  liftMotorVertical.getTargetPosition());
+        opMode.telemetry.addData("\tcurrent position Vertical", liftMotorVertical.getCurrentPosition());
+        opMode.telemetry.addData("\ttarget Horizontal ", liftMotorHorizontal.getTargetPosition());
+        opMode.telemetry.addData("\tcurrent position Horizontal", liftMotorHorizontal.getCurrentPosition());
     }
     public void manualTeleop(Controller operator){
         if(operator.a.onClick()){
@@ -111,14 +115,8 @@ public class Lift extends SubSystem{
         if(operator.b.onClick()){
             closeGrabServo();
         }
-        if(operator.rightStickY.getValue()>0){
-            liftServo.setPosition(1);
-        }
-        else if(operator.rightStickY.getValue()<0){
-            liftServo.setPosition(0);
-        }
-        else liftServo.setPosition(0.5);
-        liftMotor.setPower(operator.leftStickY.getValue());
+        liftMotorVertical.setPower(operator.leftStickY.getValue());
+        liftMotorHorizontal.setPower(operator.rightStickY.getValue());
     }
     public void closeGrabServo(){
         grabServo.setPosition(GRAB_POS);
@@ -127,32 +125,11 @@ public class Lift extends SubSystem{
         grabServo.setPosition(RELEASED_POS);
     }
     public void moveLift(LiftPosition position) {
-        if (position.getServoRotation() > servoPosition) {
-            servoRotateLeft(position.getServoRotation() - servoPosition);
-        }
-        else if (position.getServoRotation() < servoPosition) {
-            servoRotateRight(  servoPosition - position.getServoRotation());
-        }
-        liftServo.setPosition(position.getServoRotation());
-        liftMotor.setTargetPosition(position.getHeight() - GlobalVariables.endAutoArmEncoder);
-        liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        liftMotor.setPower(Math.abs(POWER));
-        servoPosition = position.getServoRotation();
-    }
-    public void servoRotateLeft(int time){
-        liftServo.setPosition(1);
-        servoRotateStop(time);
-    }
-    public void servoRotateRight(int time){
-        liftServo.setPosition(0);
-        servoRotateStop(time);
-    }
-    public void  servoRotateStop(int time){
-        t.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                liftServo.setPosition(0.5);
-            }
-        }, time);
+        liftMotorHorizontal.setTargetPosition(position.getRangeOut());
+        liftMotorHorizontal.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftMotorHorizontal.setPower(POWER);
+        liftMotorVertical.setTargetPosition(position.getHeight() - GlobalVariables.endAutoArmEncoder);
+        liftMotorVertical.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftMotorVertical.setPower(Math.abs(POWER));
     }
 }

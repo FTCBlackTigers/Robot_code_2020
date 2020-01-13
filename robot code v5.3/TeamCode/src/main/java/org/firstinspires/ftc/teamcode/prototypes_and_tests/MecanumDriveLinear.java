@@ -9,8 +9,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.robot_systems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.robot_systems.Robot;
 
+import java.util.concurrent.Callable;
+
 @Autonomous(name = "mecanumTest",group = "")
-@Disabled
+
 public class MecanumDriveLinear extends LinearOpMode {
     MecanumDrive mecanumDrive = new MecanumDrive();
     Robot robot = new Robot();
@@ -19,12 +21,13 @@ public class MecanumDriveLinear extends LinearOpMode {
         mecanumDrive.init(hardwareMap , this);
         robot.init(hardwareMap,this);
         waitForStart();
-        robot.foundationMove.down();
-        sleep(1000);
-        //mecanumDrive.driveByEncoder(100,90,0.5 ,2);
-        mecanumDrive.driveByEncoder(100,60,1,2 );
-        mecanumDrive.driveByEncoder(100,45,1 ,2 );
-        //mecanumDrive.driveByEncoder(100,10,0.5,2);
+        mecanumDrive.driveByEncoder(150, 0, 1, 5, new Callable() {
+            @Override
+            public Object call() throws Exception {
+                robot.intake.take();
+                return null;
+            }
+        },0.5);
 
 
 
