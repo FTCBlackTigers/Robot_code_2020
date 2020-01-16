@@ -6,10 +6,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.controller.Controller;
 import org.firstinspires.ftc.teamcode.utils.BT_Gyro;
 import org.firstinspires.ftc.teamcode.utils.GlobalVariables;
 import org.firstinspires.ftc.teamcode.utils.TurnPIDController;
-import org.firstinspires.ftc.teamcode.controller.Controller;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -157,7 +157,8 @@ public class MecanumDrive extends SubSystem {
     public void init(HardwareMap hardwareMap, OpMode opMode){
         this.opMode = opMode;
 
-        turnPID = new TurnPIDController(0.0072, 0.000019, 0.000025, 3, this.opMode);
+        turnPID = new TurnPIDController(0.032, 0.0, 0.0017, 3, this.opMode);
+
 
         frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftDrive");
         frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive");
@@ -347,7 +348,7 @@ public class MecanumDrive extends SubSystem {
         backRightDrive.setPower(Math.abs(wheelsPowers.getBackRight()));
 
         double timeToStop = this.opMode.getRuntime() + timeoutS;
-        final int maxError = 25;
+        final int maxError = 100;
         boolean frontLeftIsBusy = (Math.abs(frontLeftDrive.getTargetPosition() - frontLeftDrive.getCurrentPosition()) > maxError) && (Math.abs(frontLeftDrive.getPower())>0);
         boolean frontRightIsBusy =(Math.abs(frontRightDrive.getTargetPosition() - frontRightDrive.getCurrentPosition()) > maxError) && (Math.abs(frontRightDrive.getPower())>0);
         boolean backLeftIsBusy = (Math.abs(backLeftDrive.getTargetPosition() - backLeftDrive.getCurrentPosition()) > maxError) && (Math.abs(backLeftDrive.getPower())>0);
