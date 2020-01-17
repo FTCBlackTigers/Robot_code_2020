@@ -7,8 +7,6 @@ import org.firstinspires.ftc.teamcode.robot_systems.Robot;
 import org.firstinspires.ftc.teamcode.utils.GlobalVariables;
 import org.firstinspires.ftc.teamcode.utils.SkystoneDetection;
 
-import java.util.concurrent.Callable;
-
 @Autonomous(name = "Stone Blue", group ="blue")
 public class StoneBlue extends LinearOpMode {
     private Robot robot = new Robot();

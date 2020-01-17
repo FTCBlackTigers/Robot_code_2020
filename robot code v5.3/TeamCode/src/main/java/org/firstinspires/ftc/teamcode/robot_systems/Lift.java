@@ -40,8 +40,8 @@ public class Lift extends SubSystem{
     Servo grabServo;
     int servoPosition = 0;
     private final double POWER = 1;
-    private final double GRAB_POS = 0.2;
-    private final double RELEASED_POS = 0.1;
+    private final double GRAB_POS = 0;
+    private final double RELEASED_POS = 0.15;
     private final Timer t = new java.util.Timer();
 
     LiftPosition[][]positions = {{LiftPosition.LEVEL1,LiftPosition.LEVEL1_LONG},
@@ -117,6 +117,11 @@ public class Lift extends SubSystem{
         }
         liftMotorVertical.setPower(operator.leftStickY.getValue());
         liftMotorHorizontal.setPower(operator.rightStickY.getValue());
+        opMode.telemetry.addLine("LIFT");
+        opMode.telemetry.addData("\ttarget Vertical ",  liftMotorVertical.getTargetPosition());
+        opMode.telemetry.addData("\tcurrent position Vertical", liftMotorVertical.getCurrentPosition());
+        opMode.telemetry.addData("\ttarget Horizontal ", liftMotorHorizontal.getTargetPosition());
+        opMode.telemetry.addData("\tcurrent position Horizontal", liftMotorHorizontal.getCurrentPosition());
     }
     public void closeGrabServo(){
         grabServo.setPosition(GRAB_POS);
