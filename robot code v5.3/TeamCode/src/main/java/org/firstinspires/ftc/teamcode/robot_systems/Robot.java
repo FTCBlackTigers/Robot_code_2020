@@ -21,7 +21,7 @@ public class Robot {
         mecanumDrive.teleopMotion(driver, operator);
         intake.teleopMotion(driver, operator);
         foundationMove.teleopMotion(driver, operator);
-        lift.manualTeleop(operator);
+        lift.teleopMotion(driver, operator);
     }
 }
 

@@ -10,19 +10,17 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.controller.Controller;
 import org.firstinspires.ftc.teamcode.utils.GlobalVariables;
 
-import java.util.Timer;
-
 public class Lift extends SubSystem{
-    enum LiftPosition{
-        TAKE_STONE(0,0), LEVEL1(7,0.5), LEVEL2(21,0.5), LEVEL3(35,0.5) ,
-        LEVEL1_LONG(7,1) , LEVEL2_LONG(21,1) , LEVEL3_LONG(35, 1);
+    public enum LiftPosition{
+        TAKE_STONE(0,0), LEVEL1(7,36), LEVEL2(21,36), LEVEL3(35,36);
+
 
         private double height;
         //TODO CHACK tickperCM
         private double tickPerCMVertical =1;
         private double rangeOut;
-        private int tickPerCMHorizontal = 1;
-        private LiftPosition (double height, double rangeOut) {
+        private double tickPerCMHorizontal = 69.78;
+        LiftPosition (double height, double rangeOut) {
             this.height = height;
             this.rangeOut = rangeOut;
         }
@@ -38,17 +36,14 @@ public class Lift extends SubSystem{
     DcMotor liftMotorVertical;
     DcMotor liftMotorHorizontal;
     Servo grabServo;
-    int servoPosition = 0;
     private final double POWER = 1;
     private final double GRAB_POS = 0;
     private final double RELEASED_POS = 0.15;
-    private final Timer t = new java.util.Timer();
 
-    LiftPosition[][]positions = {{LiftPosition.LEVEL1,LiftPosition.LEVEL1_LONG},
-                                  {LiftPosition.LEVEL2,LiftPosition.LEVEL2_LONG},
-                                 {LiftPosition.LEVEL3,LiftPosition.LEVEL3_LONG}};
+    LiftPosition[]positions = {LiftPosition.LEVEL1,
+                                  LiftPosition.LEVEL2,
+                                 LiftPosition.LEVEL3};
     private int currentPositionHeight = -1;
-    private int currentPositionLength = -1;
 
     @Override
     public void init(HardwareMap hardwareMap, OpMode opMode) {
@@ -70,7 +65,6 @@ public class Lift extends SubSystem{
             openGrabServo();
             moveLift(LiftPosition.TAKE_STONE);
             currentPositionHeight = -1;
-            currentPositionLength = -1;
         }
         if(operator.a.onClick()){
             openGrabServo();
@@ -79,28 +73,24 @@ public class Lift extends SubSystem{
             closeGrabServo();
         }
         if(operator.dpadUp.onClick()){
-            currentPositionHeight++;
+            if(currentPositionHeight == -1){
+                currentPositionHeight = 1;
+            }
+            else{
+                currentPositionHeight++;
+            }
             currentPositionHeight = Range.clip(currentPositionHeight,0, positions.length-1);
-            currentPositionLength = Range.clip(currentPositionLength,0, positions[0].length-1);
-            moveLift(positions[currentPositionHeight][currentPositionLength]);
+            moveLift(positions[currentPositionHeight]);
         }
         if(operator.dpadDown.onClick()){
-            currentPositionHeight--;
+            if(currentPositionHeight == -1){
+                currentPositionHeight = 1;
+            }
+            else{
+                currentPositionHeight--;
+            }
             currentPositionHeight = Range.clip(currentPositionHeight,0, positions.length-1);
-            currentPositionLength = Range.clip(currentPositionLength,0, positions[0].length-1);
-            moveLift(positions[currentPositionHeight][currentPositionLength]);
-        }
-        if(operator.dpadLeft.onClick()){
-            currentPositionLength++;
-            currentPositionHeight = Range.clip(currentPositionHeight,0, positions.length-1);
-            currentPositionLength = Range.clip(currentPositionLength,0, positions[0].length-1);
-            moveLift(positions[currentPositionHeight][currentPositionLength]);
-        }
-        if(operator.dpadRight.onClick()){
-            currentPositionLength--;
-            currentPositionHeight = Range.clip(currentPositionHeight,0, positions.length-1);
-            currentPositionLength = Range.clip(currentPositionLength,0, positions[0].length-1);
-            moveLift(positions[currentPositionHeight][currentPositionLength]);
+            moveLift(positions[currentPositionHeight]);
         }
         opMode.telemetry.addLine("LIFT");
         opMode.telemetry.addData("\ttarget Vertical ",  liftMotorVertical.getTargetPosition());
