@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="2f89ce88-bd97-4d7c-8bfa-5a0b067a1421" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/robot code v5.2/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/prototypes_and_tests/ProtIntake.java" beforeDir="false" afterPath="$PROJECT_DIR$/robot code v5.2/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/prototypes_and_tests/ProtIntake.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -12,27 +11,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/robot code v5.2/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/prototypes_and_tests/ProtIntake.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="208">
-              <caret line="79" column="13" selection-start-line="79" selection-start-column="13" selection-end-line="79" selection-end-column="13" />
-              <folding>
-                <element signature="e#0#5051#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/robot code v5.2/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/robot_systems/MecanumDrive.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2275" />
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -54,6 +33,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -61,110 +41,15 @@
               <item name="robot_code_2020" type="b2602c69:ProjectViewProjectNode" />
               <item name="robot_code_2020" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="robot_code_2020" type="b2602c69:ProjectViewProjectNode" />
-              <item name="robot_code_2020" type="462c0819:PsiDirectoryNode" />
-              <item name="robot code v5.2" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="robot_code_2020" type="b2602c69:ProjectViewProjectNode" />
-              <item name="robot_code_2020" type="462c0819:PsiDirectoryNode" />
-              <item name="robot code v5.2" type="462c0819:PsiDirectoryNode" />
-              <item name="TeamCode" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="robot_code_2020" type="b2602c69:ProjectViewProjectNode" />
-              <item name="robot_code_2020" type="462c0819:PsiDirectoryNode" />
-              <item name="robot code v5.2" type="462c0819:PsiDirectoryNode" />
-              <item name="TeamCode" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="robot_code_2020" type="b2602c69:ProjectViewProjectNode" />
-              <item name="robot_code_2020" type="462c0819:PsiDirectoryNode" />
-              <item name="robot code v5.2" type="462c0819:PsiDirectoryNode" />
-              <item name="TeamCode" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="robot_code_2020" type="b2602c69:ProjectViewProjectNode" />
-              <item name="robot_code_2020" type="462c0819:PsiDirectoryNode" />
-              <item name="robot code v5.2" type="462c0819:PsiDirectoryNode" />
-              <item name="TeamCode" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="robot_code_2020" type="b2602c69:ProjectViewProjectNode" />
-              <item name="robot_code_2020" type="462c0819:PsiDirectoryNode" />
-              <item name="robot code v5.2" type="462c0819:PsiDirectoryNode" />
-              <item name="TeamCode" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="org" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="robot_code_2020" type="b2602c69:ProjectViewProjectNode" />
-              <item name="robot_code_2020" type="462c0819:PsiDirectoryNode" />
-              <item name="robot code v5.2" type="462c0819:PsiDirectoryNode" />
-              <item name="TeamCode" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="org" type="462c0819:PsiDirectoryNode" />
-              <item name="firstinspires" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="robot_code_2020" type="b2602c69:ProjectViewProjectNode" />
-              <item name="robot_code_2020" type="462c0819:PsiDirectoryNode" />
-              <item name="robot code v5.2" type="462c0819:PsiDirectoryNode" />
-              <item name="TeamCode" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="org" type="462c0819:PsiDirectoryNode" />
-              <item name="firstinspires" type="462c0819:PsiDirectoryNode" />
-              <item name="ftc" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="robot_code_2020" type="b2602c69:ProjectViewProjectNode" />
-              <item name="robot_code_2020" type="462c0819:PsiDirectoryNode" />
-              <item name="robot code v5.2" type="462c0819:PsiDirectoryNode" />
-              <item name="TeamCode" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="org" type="462c0819:PsiDirectoryNode" />
-              <item name="firstinspires" type="462c0819:PsiDirectoryNode" />
-              <item name="ftc" type="462c0819:PsiDirectoryNode" />
-              <item name="teamcode" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="robot_code_2020" type="b2602c69:ProjectViewProjectNode" />
-              <item name="robot_code_2020" type="462c0819:PsiDirectoryNode" />
-              <item name="robot code v5.2" type="462c0819:PsiDirectoryNode" />
-              <item name="TeamCode" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="org" type="462c0819:PsiDirectoryNode" />
-              <item name="firstinspires" type="462c0819:PsiDirectoryNode" />
-              <item name="ftc" type="462c0819:PsiDirectoryNode" />
-              <item name="teamcode" type="462c0819:PsiDirectoryNode" />
-              <item name="prototypes_and_tests" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
       <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
     <property name="ignore_missing_gitignore" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/robot code v5.2" />
@@ -206,12 +91,12 @@
       <window_info id="Resources Explorer" order="5" />
       <window_info id="Capture Tool" order="6" />
       <window_info id="Favorites" order="7" side_tool="true" />
-      <window_info active="true" anchor="bottom" id="Messages" visible="true" weight="0.3289689" />
       <window_info anchor="bottom" id="Version Control" order="0" weight="0.3289689" />
       <window_info anchor="bottom" id="SonarLint" order="1" />
       <window_info anchor="bottom" id="TODO" order="2" />
       <window_info anchor="bottom" id="Terminal" order="3" />
       <window_info anchor="bottom" id="Event Log" order="4" side_tool="true" weight="0.3289689" />
+      <window_info active="true" anchor="bottom" id="Messages" order="5" visible="true" weight="0.3289689" />
       <window_info anchor="right" id="Capture Analysis" order="0" />
       <window_info anchor="right" id="Theme Preview" order="1" />
       <window_info anchor="right" id="Palette&#9;" order="2" />
@@ -259,28 +144,9 @@
     </option>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/robot code v5.2/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Intake.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-85">
-          <caret line="42" column="40" selection-start-line="42" selection-start-column="40" selection-end-line="42" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/robot code v5.2/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/robot_systems/MecanumDrive.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2275" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/robot code v5.2/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/prototypes_and_tests/ProtIntake.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="208">
-          <caret line="79" column="13" selection-start-line="79" selection-start-column="13" selection-end-line="79" selection-end-column="13" />
-          <folding>
-            <element signature="e#0#5051#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/robot code v5.2/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Intake.java" />
+    <entry file="file://$PROJECT_DIR$/robot code v5.2/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/robot_systems/MecanumDrive.java" />
+    <entry file="file://$PROJECT_DIR$/robot code v5.2/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/prototypes_and_tests/ProtIntake.java" />
   </component>
   <component name="masterDetails">
     <states>
