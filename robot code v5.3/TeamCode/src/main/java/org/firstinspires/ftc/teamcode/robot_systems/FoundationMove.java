@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.controller.Controller;
 
 public class FoundationMove extends SubSystem {
     private Servo foundServo;
-    private static final double UP_POS = 0.5;
+    private static final double UP_POS = 0.4;
     private static final double DOWN_POS = 1;
 
     @Override

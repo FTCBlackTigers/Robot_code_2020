@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.robot_systems;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
@@ -11,9 +12,9 @@ import org.firstinspires.ftc.teamcode.controller.Controller;
 
 public class Lift extends SubSystem{
     public enum LiftPosition{
-        TAKE_STONE(0,0), MOVE_OUT_HEIGHT(7,0),
+        TAKE_STONE(1, 0), MOVE_OUT_HEIGHT(7,0),
         LEVEL1(0,36), LEVEL2(8,36), LEVEL3(14,36),
-        ABOVE_FOUNDATION(6,35);
+        ABOVE_FOUNDATION(6,35), READY_TO_TAKE_STONE(6,0);
 
         private double height;
         private final double tickPerCMVertical = 398.33;
@@ -41,15 +42,18 @@ public class Lift extends SubSystem{
     private DcMotor liftMotorVertical;
     private DcMotor liftMotorHorizontal;
     private Servo grabServo;
+    private DigitalChannel resetTouchSensor;
 
     private static final double POWER = 1;
     private static final double GRAB_POS = 0;
-    private static final double RELEASED_POS = 0.15;
+    private static final double RELEASED_POS = 0.25;
 
     private final LiftPosition[] positions = {LiftPosition.LEVEL1, LiftPosition.LEVEL2, LiftPosition.LEVEL3};
     private int targetLevel = -1;
 
     private LiftState currentState;
+    private boolean touchSensorState = false;
+    private boolean touchSensorPrevState = false;
 
     @Override
     public void init(HardwareMap hardwareMap, OpMode opMode) {
@@ -58,6 +62,7 @@ public class Lift extends SubSystem{
         liftMotorVertical = hardwareMap.get(DcMotor.class, "liftMotorVertical");
         liftMotorHorizontal = hardwareMap.get(DcMotor.class, "liftMotorHorizontal");
         grabServo = hardwareMap.get(Servo.class, "grabServo");
+        resetTouchSensor = hardwareMap.get(DigitalChannel.class, "liftReset");
 
         liftMotorVertical.setDirection(DcMotorSimple.Direction.FORWARD);
         liftMotorHorizontal.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -68,6 +73,8 @@ public class Lift extends SubSystem{
         liftMotorVertical.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftMotorHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        resetTouchSensor.setMode(DigitalChannel.Mode.INPUT);
+
         openGrabServo();
 
         currentState = LiftState.TAKE_STONE;
@@ -75,6 +82,14 @@ public class Lift extends SubSystem{
 
     @Override
     public void teleopMotion(Controller driver, Controller operator) {
+        touchSensorState = resetTouchSensor.getState();
+        if(touchSensorState && !touchSensorPrevState){
+            liftMotorHorizontal.setPower(0);
+            liftMotorHorizontal.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            liftMotorHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            currentState = LiftState.TAKE_STONE;
+        }
+
         if(operator.x.onClick()){
             openGrabServo();
             moveLift(LiftPosition.TAKE_STONE);
@@ -112,6 +127,12 @@ public class Lift extends SubSystem{
         switch (currentState){
             case TAKE_STONE:
                 //TODO: check how to recognize a stone
+                if (operator.leftTrigger.onClick()){
+                    moveLift(LiftPosition.READY_TO_TAKE_STONE);
+                }
+                else if (operator.leftTrigger.onRealese()){
+                    moveLift(LiftPosition.TAKE_STONE);
+                }
                 break;
             case MOVE_UP:
                 if (liftMotorVertical.getCurrentPosition() >= LiftPosition.ABOVE_FOUNDATION.getHeight() ||
@@ -145,8 +166,13 @@ public class Lift extends SubSystem{
         opMode.telemetry.addData("\tcurrent position Vertical", liftMotorVertical.getCurrentPosition());
         opMode.telemetry.addData("\ttarget Horizontal ", liftMotorHorizontal.getTargetPosition());
         opMode.telemetry.addData("\tcurrent position Horizontal", liftMotorHorizontal.getCurrentPosition());
+        touchSensorPrevState = touchSensorState;
     }
     public void manualTeleop(Controller operator){
+        if(resetTouchSensor.getState()){
+            liftMotorHorizontal.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            liftMotorHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
         if(operator.a.onClick()){
             openGrabServo();
         }
