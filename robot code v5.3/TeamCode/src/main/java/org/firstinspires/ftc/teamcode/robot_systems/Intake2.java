@@ -11,12 +11,14 @@ import org.firstinspires.ftc.teamcode.robot_systems.SubSystem;
 public class Intake2 extends SubSystem {
    private DcMotor leftMotor;
    private DcMotor rightMotor;
-   private final double POWER = 1;
+   private static final double POWER = 1;
     @Override
     public void init(HardwareMap hardwareMap, OpMode opMode) {
         this.opMode = opMode;
+
         leftMotor = hardwareMap.get(DcMotor.class, "leftIntakeMotor");
         rightMotor = hardwareMap.get(DcMotor.class, "rightIntakeMotor");
+
         leftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         rightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }

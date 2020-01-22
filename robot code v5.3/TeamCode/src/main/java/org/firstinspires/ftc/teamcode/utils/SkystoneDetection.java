@@ -57,7 +57,7 @@ public class SkystoneDetection {
     public enum SkystonePos{
         LEFT, CENTER, RIGHT, NONE
     }
-    public static final double WAITFORDETECTION = 3;
+    public static final double WAIT_FOR_DETECTION = 3;
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";

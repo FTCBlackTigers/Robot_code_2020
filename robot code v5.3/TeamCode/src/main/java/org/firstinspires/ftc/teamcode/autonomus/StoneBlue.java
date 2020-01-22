@@ -25,7 +25,7 @@ public class StoneBlue extends LinearOpMode {
         }
         //waitForStart();
         //robot.mecanumDrive.driveByEncoder(20,0,0.3,1);
-        double timeToStop = this.getRuntime() + SkystoneDetection.WAITFORDETECTION;
+        double timeToStop = this.getRuntime() + SkystoneDetection.WAIT_FOR_DETECTION;
         while(skystonePos ==SkystoneDetection.SkystonePos.NONE && timeToStop> getRuntime() && opModeIsActive()){
             skystonePos = skystoneDetection.getSkystonePos();
             telemetry.addData("skystone", skystonePos);
@@ -73,7 +73,7 @@ public class StoneBlue extends LinearOpMode {
         sleep(500);
         robot.mecanumDrive.driveByEncoder(50,180,0.7,2);
         robot.intake.stop();
-        GlobalVariables.setEndAutoRobotAngle(robot.mecanumDrive.gyro.getAngle());
+        GlobalVariables.setEndAutoRobotAngle(robot.mecanumDrive.getAngle());
        // GlobalVariables.endAutoArmEncoder = robot.movingStoneArm.motorAngle.getCurrentPosition();
         //GlobalVariables.endAutoRampEncoder = robot.intake.rampAngle.getCurrentPosition();
     }

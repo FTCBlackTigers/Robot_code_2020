@@ -27,7 +27,7 @@ public class BlueFoundationAndStone extends LinearOpMode {
             telemetry.addData("skystone", skystonePos);
             telemetry.update();
         }
-        double timeToStop = this.getRuntime() + SkystoneDetection.WAITFORDETECTION;
+        double timeToStop = this.getRuntime() + SkystoneDetection.WAIT_FOR_DETECTION;
         while(skystonePos ==SkystoneDetection.SkystonePos.NONE && timeToStop> getRuntime() && opModeIsActive()){
             skystonePos = skystoneDetection.getSkystonePos();
             telemetry.addData("skystone", skystonePos);
@@ -85,6 +85,6 @@ public class BlueFoundationAndStone extends LinearOpMode {
         sleep(700);
         robot.mecanumDrive.driveByEncoder(100,-20,1,2);
         robot.mecanumDrive.driveByEncoder(40,0,0.7,3);
-        GlobalVariables.setEndAutoRobotAngle(robot.mecanumDrive.gyro.getAngle());
+        GlobalVariables.setEndAutoRobotAngle(robot.mecanumDrive.getAngle());
     }
 }

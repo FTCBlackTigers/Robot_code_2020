@@ -7,15 +7,16 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.controller.Controller;
 
 public class FoundationMove extends SubSystem {
-    Servo foundServo;
-    final double UP_POS = 0.5;
-    final double DOWN_POS = 1;
-    final double GRAB_STONE = 0.5;
+    private Servo foundServo;
+    private static final double UP_POS = 0.5;
+    private static final double DOWN_POS = 1;
 
     @Override
     public void init(HardwareMap hardwareMap, OpMode opMode) {
         this.opMode = opMode;
+
         foundServo = hardwareMap.get(Servo.class, "foundServo");
+
         up();
     }
 
@@ -34,5 +35,4 @@ public class FoundationMove extends SubSystem {
     public void down() {
         foundServo.setPosition(DOWN_POS);
     }
-    public void grab() { foundServo.setPosition(GRAB_STONE);}
 }

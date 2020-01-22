@@ -42,8 +42,6 @@ public class BT_Gyro {
         // and named "The god of the sensors".
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
-
-        //start();
     }
     public void start () {
         // Start the logging of measured acceleration
@@ -52,15 +50,5 @@ public class BT_Gyro {
     public double getAngle() {
         Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         return angles.firstAngle;
-    }
-    public Position getPosition(){
-        return imu.getPosition();
-    }
-
-    public Velocity getVelocity(){
-        return imu.getVelocity();
-    }
-    public Acceleration getGravity(){
-        return imu.getGravity();
     }
 }

@@ -13,9 +13,9 @@ import org.firstinspires.ftc.teamcode.robot_systems.MecanumDrive;
 @Disabled
 public class MecanumTeleop extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
-    Controller driver = new Controller();
-    Controller operator = new Controller();
-    MecanumDrive mecanumDrive = new MecanumDrive();
+    private Controller driver = new Controller();
+    private Controller operator = new Controller();
+    private MecanumDrive mecanumDrive = new MecanumDrive();
 
     @Override
     public void init() {

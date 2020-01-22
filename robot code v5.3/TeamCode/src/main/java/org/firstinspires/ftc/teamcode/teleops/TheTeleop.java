@@ -8,9 +8,10 @@ import org.firstinspires.ftc.teamcode.robot_systems.Robot;
 
 @TeleOp(name = "THE BIG TELEOP", group = "TeleOp")
 public class TheTeleop extends OpMode {
-    Robot robot = new Robot();
-    Controller driver = new Controller();
-    Controller operator= new Controller();
+    private Robot robot = new Robot();
+    private Controller driver = new Controller();
+    private Controller operator= new Controller();
+
     @Override
     public void init() {
         robot.init(hardwareMap, this);
@@ -20,7 +21,9 @@ public class TheTeleop extends OpMode {
     public void loop() {
         driver.setValues(gamepad1);
         operator.setValues(gamepad2);
+
         robot.teleop(driver, operator);
+
         driver.setPrevValues();
         operator.setPrevValues();
     }

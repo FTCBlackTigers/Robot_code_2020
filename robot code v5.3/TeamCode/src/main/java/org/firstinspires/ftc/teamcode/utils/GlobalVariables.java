@@ -4,6 +4,9 @@ public class GlobalVariables {
      private static double endAutoRobotAngle;
      public static int endAutoRampEncoder;
      public static int endAutoArmEncoder;
+
+     private GlobalVariables(){}
+
      public static void reset (){
          endAutoRobotAngle = 0;
          endAutoRampEncoder = 0;
