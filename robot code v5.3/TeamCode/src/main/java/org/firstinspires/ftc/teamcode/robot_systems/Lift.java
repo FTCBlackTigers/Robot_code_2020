@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.controller.Button;
 import org.firstinspires.ftc.teamcode.controller.Controller;
 
 public class Lift extends SubSystem{
@@ -52,8 +53,7 @@ public class Lift extends SubSystem{
     private int targetLevel = -1;
 
     private LiftState currentState;
-    private boolean touchSensorState = false;
-    private boolean touchSensorPrevState = false;
+    private Button resetEncoderButton = new Button();
 
     @Override
     public void init(HardwareMap hardwareMap, OpMode opMode) {
@@ -82,8 +82,8 @@ public class Lift extends SubSystem{
 
     @Override
     public void teleopMotion(Controller driver, Controller operator) {
-        touchSensorState = resetTouchSensor.getState();
-        if(touchSensorState && !touchSensorPrevState){
+        resetEncoderButton.setState(resetTouchSensor.getState());
+        if(resetEncoderButton.onClick()){
             liftMotorHorizontal.setPower(0);
             liftMotorHorizontal.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             liftMotorHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -166,10 +166,11 @@ public class Lift extends SubSystem{
         opMode.telemetry.addData("\tcurrent position Vertical", liftMotorVertical.getCurrentPosition());
         opMode.telemetry.addData("\ttarget Horizontal ", liftMotorHorizontal.getTargetPosition());
         opMode.telemetry.addData("\tcurrent position Horizontal", liftMotorHorizontal.getCurrentPosition());
-        touchSensorPrevState = touchSensorState;
+        resetEncoderButton.setPrevState();
     }
     public void manualTeleop(Controller operator){
-        if(resetTouchSensor.getState()){
+        resetEncoderButton.setState(resetTouchSensor.getState());
+        if(resetEncoderButton.onClick()){
             liftMotorHorizontal.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             liftMotorHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
@@ -186,6 +187,7 @@ public class Lift extends SubSystem{
         opMode.telemetry.addData("\tcurrent position Vertical", liftMotorVertical.getCurrentPosition());
         opMode.telemetry.addData("\ttarget Horizontal ", liftMotorHorizontal.getTargetPosition());
         opMode.telemetry.addData("\tcurrent position Horizontal", liftMotorHorizontal.getCurrentPosition());
+        resetEncoderButton.setPrevState();
     }
     public void closeGrabServo(){
         grabServo.setPosition(GRAB_POS);

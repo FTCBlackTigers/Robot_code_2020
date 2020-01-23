@@ -9,11 +9,11 @@ public class Button {
         prevState = false;
     }
 
-    void setState(boolean state){
+    public void setState(boolean state){
         this.state = state;
     }
 
-    void setPrevState(){
+    public void setPrevState(){
         this.prevState = this.state;
     }
 
