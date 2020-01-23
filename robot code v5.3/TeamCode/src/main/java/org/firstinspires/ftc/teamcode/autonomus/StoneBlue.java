@@ -75,6 +75,6 @@ public class StoneBlue extends LinearOpMode {
         robot.intake.stop();
         GlobalVariables.setEndAutoRobotAngle(robot.mecanumDrive.getAngle());
        // GlobalVariables.endAutoArmEncoder = robot.movingStoneArm.motorAngle.getCurrentPosition();
-        //GlobalVariables.endAutoRampEncoder = robot.intake.rampAngle.getCurrentPosition();
+        //GlobalVariables.endAutoLiftVertical = robot.intake.rampAngle.getCurrentPosition();
     }
 }

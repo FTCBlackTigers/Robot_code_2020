@@ -30,6 +30,6 @@ public class StoneRed extends LinearOpMode {
         robot.mecanumDrive.driveByEncoder(80,0,0.7,2);
         GlobalVariables.setEndAutoRobotAngle(robot.mecanumDrive.gyro.getAngle()+180);
         GlobalVariables.endAutoArmEncoder = robot.movingStoneArm.motorAngle.getCurrentPosition();
-        GlobalVariables.endAutoRampEncoder = robot.intake.rampAngle.getCurrentPosition();*/
+        GlobalVariables.endAutoLiftVertical = robot.intake.rampAngle.getCurrentPosition();*/
     }
 }

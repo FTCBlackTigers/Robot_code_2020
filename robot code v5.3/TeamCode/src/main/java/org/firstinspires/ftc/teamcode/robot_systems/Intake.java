@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.robot_systems;
 
-import android.telephony.euicc.DownloadableSubscription;
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -129,7 +127,7 @@ public class Intake extends SubSystem {
     }
 
     public void moveRamp(RampAngle target) {
-        rampAngle.setTargetPosition(target.getAngleInTicks()- GlobalVariables.endAutoRampEncoder);
+        rampAngle.setTargetPosition(target.getAngleInTicks()- GlobalVariables.endAutoLiftVertical);
         rampAngle.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rampAngle.setPower(Math.abs(RAMP_POWER));
     }

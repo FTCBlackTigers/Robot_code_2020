@@ -30,6 +30,6 @@ public class FoundationRed extends LinearOpMode {
         robot.mecanumDrive.driveByEncoder(120,0,1,2);
         GlobalVariables.setEndAutoRobotAngle(robot.mecanumDrive.getAngle()+180);
         //GlobalVariables.endAutoArmEncoder = robot.movingStoneArm.motorAngle.getCurrentPosition();
-        //GlobalVariables.endAutoRampEncoder = robot.intake.rampAngle.getCurrentPosition();
+        //GlobalVariables.endAutoLiftVertical = robot.intake.rampAngle.getCurrentPosition();
     }
 }

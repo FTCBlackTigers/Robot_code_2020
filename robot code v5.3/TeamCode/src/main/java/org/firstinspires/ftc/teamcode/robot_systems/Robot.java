@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.controller.Controller;
+import org.firstinspires.ftc.teamcode.utils.GlobalVariables;
 
 public class Robot {
     public MecanumDrive mecanumDrive = new MecanumDrive();
@@ -22,6 +23,11 @@ public class Robot {
         intake.teleopMotion(driver, operator);
         foundationMove.teleopMotion(driver, operator);
         lift.teleopMotion(driver, operator);
+    }
+    public void endAuto(double startAngle){
+        GlobalVariables.setEndAutoRobotAngle(mecanumDrive.getAngle() + startAngle);
+        GlobalVariables.endAutoLiftHorizontal = lift.getHorizontalPosition();
+        GlobalVariables.endAutoLiftVertical = lift.getVerticalPosition();
     }
 }
 

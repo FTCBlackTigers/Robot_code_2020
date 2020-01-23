@@ -15,7 +15,8 @@ public class Lift extends SubSystem{
     public enum LiftPosition{
         TAKE_STONE(1, 0), MOVE_OUT_HEIGHT(7,0),
         LEVEL1(0,36), LEVEL2(8,36), LEVEL3(14,36),
-        ABOVE_FOUNDATION(6,35), READY_TO_TAKE_STONE(6,0);
+        ABOVE_FOUNDATION(6,35), READY_TO_TAKE_STONE(6,0),
+        MAX_BOUNDARY(15, 36), MIN_BOUNDARY(1, 0);
 
         private double height;
         private final double tickPerCMVertical = 398.33;
@@ -37,7 +38,7 @@ public class Lift extends SubSystem{
     }
 
     public enum LiftState{
-        TAKE_STONE, MOVE_UP, MOVE_OUT,MOVE_TO_LEVEL, AT_LEVEL, RELEASE;
+        TAKE_STONE, MOVE_UP, MOVE_OUT,MOVE_TO_LEVEL, AT_LEVEL, MANUAL;
     }
 
     private DcMotor liftMotorVertical;
@@ -47,7 +48,8 @@ public class Lift extends SubSystem{
 
     private static final double POWER = 1;
     private static final double GRAB_POS = 0;
-    private static final double RELEASED_POS = 0.25;
+    private static final double RELEASE_POS = 0.25;
+    private static final double RELEASE_ON_FOUNDATION = 0.2;
 
     private final LiftPosition[] positions = {LiftPosition.LEVEL1, LiftPosition.LEVEL2, LiftPosition.LEVEL3};
     private int targetLevel = -1;
@@ -97,14 +99,19 @@ public class Lift extends SubSystem{
             currentState = LiftState.TAKE_STONE;
         }
         if(operator.a.onClick()){
-            openGrabServo();
+            if (currentState == LiftState.TAKE_STONE){
+                openGrabServo();
+            }
+            else {
+                releaseOnFoundation();
+            }
         }
         if(operator.b.onClick()){
             closeGrabServo();
         }
         if(operator.dpadUp.onClick()){
             if(currentState == LiftState.TAKE_STONE){
-                targetLevel = 1;
+                targetLevel = 0;
                 moveHeight(LiftPosition.MOVE_OUT_HEIGHT);
             }
             else{
@@ -115,7 +122,7 @@ public class Lift extends SubSystem{
         }
         if(operator.dpadDown.onClick()){
             if(currentState == LiftState.TAKE_STONE){
-                targetLevel = 1;
+                targetLevel = 0;
                 moveHeight(LiftPosition.MOVE_OUT_HEIGHT);
             }
             else{
@@ -123,6 +130,18 @@ public class Lift extends SubSystem{
                 targetLevel = Range.clip(targetLevel,0, positions.length-1);
             }
             currentState = LiftState.MOVE_UP;
+        }
+        if(operator.rightStickY.isPressed()){
+            manualHorizontalMove(operator.rightStickY.getValue());
+        }
+        else if(operator.rightStickY.onRealese()){
+          manualHorizontalMove(0);
+        }
+        if(operator.leftStickY.isPressed()) {
+            manualVerticalMove(operator.leftStickY.getValue());
+        }
+        else if(operator.leftStickY.onRealese()){
+            manualVerticalMove(0);
         }
         switch (currentState){
             case TAKE_STONE:
@@ -189,11 +208,40 @@ public class Lift extends SubSystem{
         opMode.telemetry.addData("\tcurrent position Horizontal", liftMotorHorizontal.getCurrentPosition());
         resetEncoderButton.setPrevState();
     }
+    public int getHorizontalPosition(){
+       return liftMotorHorizontal.getCurrentPosition();
+    }
+    public int getVerticalPosition(){
+        return liftMotorVertical.getCurrentPosition();
+    }
     public void closeGrabServo(){
         grabServo.setPosition(GRAB_POS);
     }
     public void openGrabServo (){
-        grabServo.setPosition(RELEASED_POS);
+        grabServo.setPosition(RELEASE_POS);
+    }
+    public void releaseOnFoundation(){
+        grabServo.setPosition(RELEASE_ON_FOUNDATION);
+    }
+    private void manualHorizontalMove(double power){
+        currentState = LiftState.MANUAL;
+        liftMotorHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        if((resetTouchSensor.getState() && power < 0) ||
+                (liftMotorHorizontal.getCurrentPosition() > LiftPosition.MAX_BOUNDARY.getRangeOut() && power > 0)){
+            liftMotorHorizontal.setPower(0);
+            return;
+        }
+        liftMotorHorizontal.setPower(power);
+    }
+    private void manualVerticalMove(double power) {
+        currentState = LiftState.MANUAL;
+        liftMotorVertical.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        if ((liftMotorVertical.getCurrentPosition() < LiftPosition.MIN_BOUNDARY.getHeight() && power < 0) ||
+                (liftMotorVertical.getCurrentPosition() > LiftPosition.MAX_BOUNDARY.getHeight() && power > 0)) {
+            liftMotorVertical.setPower(0);
+            return;
+        }
+        liftMotorVertical.setPower(power);
     }
     public void moveLift(LiftPosition position) {
         moveHeight(position);

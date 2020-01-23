@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.controller.Controller;
-import org.firstinspires.ftc.teamcode.utils.GlobalVariables;
 
 public class MovingStoneArm extends SubSystem{
 
@@ -156,11 +155,11 @@ public class MovingStoneArm extends SubSystem{
 
     public void moveAngle(ArmAngle target) {
         if (target == ArmAngle.RELEASE ){
-           motorAngle.setTargetPosition (motorAngle.getCurrentPosition() + target.getAngleInTicks() - GlobalVariables.endAutoArmEncoder);
+           motorAngle.setTargetPosition (motorAngle.getCurrentPosition() + target.getAngleInTicks() );
         }
 
         else {
-            motorAngle.setTargetPosition(target.getAngleInTicks() - GlobalVariables.endAutoArmEncoder);
+            motorAngle.setTargetPosition(target.getAngleInTicks());
         }
         motorAngle.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorAngle.setPower(Math.abs(ANGLE_POWER));

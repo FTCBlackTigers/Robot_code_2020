@@ -2,15 +2,15 @@ package org.firstinspires.ftc.teamcode.utils;
 
 public class GlobalVariables {
      private static double endAutoRobotAngle;
-     public static int endAutoRampEncoder;
-     public static int endAutoArmEncoder;
+     public static int endAutoLiftVertical;
+     public static int endAutoLiftHorizontal;
 
      private GlobalVariables(){}
 
      public static void reset (){
          endAutoRobotAngle = 0;
-         endAutoRampEncoder = 0;
-         endAutoArmEncoder = 0;
+         endAutoLiftVertical = 0;
+         endAutoLiftHorizontal = 0;
      }
 
     public static void setEndAutoRobotAngle(double endAutoRobotAngle) {
