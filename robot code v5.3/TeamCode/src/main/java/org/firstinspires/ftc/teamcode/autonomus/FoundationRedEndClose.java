@@ -7,8 +7,8 @@ import org.firstinspires.ftc.teamcode.robot_systems.Lift;
 import org.firstinspires.ftc.teamcode.robot_systems.Robot;
 import org.firstinspires.ftc.teamcode.utils.GlobalVariables;
 
-@Autonomous(name = "Red foundation Far", group ="red")
-public class FoundationRed extends LinearOpMode {
+@Autonomous(name = "Red foundation Close", group ="red")
+public class FoundationRedEndClose extends LinearOpMode {
     private Robot robot = new Robot();
 
     @Override
@@ -17,7 +17,7 @@ public class FoundationRed extends LinearOpMode {
         robot.init(hardwareMap, this);
         waitForStart();
         robot.lift.moveLift(Lift.LiftPosition.RELEASE_INTAKE);
-        robot.mecanumDrive.driveByEncoder(150,210,1, 1.5 );
+        robot.mecanumDrive.driveByEncoder(150,210,1, 3 );
         robot.mecanumDrive.driveByEncoder(20,180,0.5,1);
         robot.mecanumDrive.driveByEncoder(15,180,0.1,2);
         robot.foundationMove.down();
@@ -28,6 +28,7 @@ public class FoundationRed extends LinearOpMode {
         robot.foundationMove.up();
         sleep(700);
         robot.lift.moveLift(Lift.LiftPosition.TAKE_STONE);
+        robot.mecanumDrive.driveByEncoder(70, -90, 0.5, 3);
         robot.mecanumDrive.driveByEncoder(120,0,1,2);
         robot.endAuto(180);
 

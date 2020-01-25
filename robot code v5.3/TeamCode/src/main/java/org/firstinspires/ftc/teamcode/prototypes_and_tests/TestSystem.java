@@ -14,6 +14,7 @@ public class TestSystem extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
     Controller driver = new Controller();
     Controller oparetor = new Controller();
+
     @Override
     public void init() {
         lift.init(hardwareMap, this);
@@ -22,10 +23,10 @@ public class TestSystem extends OpMode {
 
     @Override
     public void loop() {
-        driver.setValues(gamepad1);
-        oparetor.setValues(gamepad2);
-        lift.manualTeleop(oparetor);
-        driver.setPrevValues();
-        oparetor.setPrevValues();
+    }
+
+    @Override
+    public void start() {
+        lift.moveLift(Lift.LiftPosition.RELEASE_INTAKE);
     }
 }
