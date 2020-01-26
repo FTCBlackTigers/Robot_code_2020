@@ -60,7 +60,7 @@ public class Lift extends SubSystem{
 
     @Override
     public void init(HardwareMap hardwareMap, OpMode opMode) {
-        this.opMode=opMode;
+        this.opMode = opMode;
 
         liftMotorVertical = hardwareMap.get(DcMotor.class, "liftMotorVertical");
         liftMotorHorizontal = hardwareMap.get(DcMotor.class, "liftMotorHorizontal");
@@ -101,7 +101,7 @@ public class Lift extends SubSystem{
             currentState = LiftState.GOING_TO_TAKE_STONE;
         }
         if(operator.a.onClick()){
-            if (currentState == LiftState.TAKE_STONE){
+            if (currentState == LiftState.TAKE_STONE || currentState == LiftState.GOING_TO_TAKE_STONE){
                 openGrabServo();
             }
             else {
@@ -156,29 +156,29 @@ public class Lift extends SubSystem{
                 }
                 break;
             case GOING_TO_TAKE_STONE:
-                if (liftMotorVertical.getCurrentPosition() - GlobalVariables.endAutoLiftVertical < LiftPosition.LEVEL2.getHeight()) {
+                if (getVerticalPosition() < LiftPosition.LEVEL2.getHeight()) {
                     moveLift(LiftPosition.TAKE_STONE);
                     currentState = LiftState.TAKE_STONE;
                 }
                 break;
             case MOVE_UP:
-                if (liftMotorVertical.getCurrentPosition() - GlobalVariables.endAutoLiftVertical >= LiftPosition.ABOVE_FOUNDATION.getHeight() ||
-                        liftMotorHorizontal.getCurrentPosition()- GlobalVariables.endAutoLiftHorizontal >= LiftPosition.ABOVE_FOUNDATION.getRangeOut()){
+                if (getVerticalPosition() >= LiftPosition.ABOVE_FOUNDATION.getHeight() ||
+                        getHorizontalPosition() >= LiftPosition.ABOVE_FOUNDATION.getRangeOut()){
                     currentState = LiftState.MOVE_OUT;
                     moveRangeOut(positions[targetLevel]);
                 }
                 break;
             case MOVE_OUT:
-                if ((liftMotorVertical.getCurrentPosition() - GlobalVariables.endAutoLiftVertical >= LiftPosition.ABOVE_FOUNDATION.getHeight() &&
+                if ((getVerticalPosition() >= LiftPosition.ABOVE_FOUNDATION.getHeight() &&
                         positions[targetLevel].getHeight() >= LiftPosition.ABOVE_FOUNDATION.getHeight()) ||
-                        liftMotorHorizontal.getCurrentPosition()- GlobalVariables.endAutoLiftHorizontal >= LiftPosition.ABOVE_FOUNDATION.getRangeOut()){
+                        getHorizontalPosition() >= LiftPosition.ABOVE_FOUNDATION.getRangeOut()){
                     currentState = LiftState.MOVE_TO_LEVEL;
                     moveLift(positions[targetLevel]);
                 }
                 break;
             case MOVE_TO_LEVEL:
-                if (Math.abs(liftMotorHorizontal.getTargetPosition() - liftMotorHorizontal.getCurrentPosition()- GlobalVariables.endAutoLiftHorizontal) < 100 &&
-                        Math.abs(liftMotorVertical.getTargetPosition() - liftMotorVertical.getCurrentPosition()- GlobalVariables.endAutoLiftVertical) < 100){
+                if (Math.abs(liftMotorHorizontal.getTargetPosition() - liftMotorHorizontal.getCurrentPosition()) < 100 &&
+                        Math.abs(liftMotorVertical.getTargetPosition() - liftMotorVertical.getCurrentPosition()) < 100){
                     liftMotorVertical.setPower(0);
                     liftMotorHorizontal.setPower(0);
                     currentState = LiftState.AT_LEVEL;
@@ -190,9 +190,9 @@ public class Lift extends SubSystem{
         opMode.telemetry.addLine("LIFT");
         opMode.telemetry.addData("\tCurrent state", currentState);
         opMode.telemetry.addData("\ttarget Vertical ",  liftMotorVertical.getTargetPosition());
-        opMode.telemetry.addData("\tcurrent position Vertical", liftMotorVertical.getCurrentPosition()- GlobalVariables.endAutoLiftVertical);
+        opMode.telemetry.addData("\tcurrent position Vertical", liftMotorVertical.getCurrentPosition()).addData("Real vertical position", getVerticalPosition());
         opMode.telemetry.addData("\ttarget Horizontal ", liftMotorHorizontal.getTargetPosition());
-        opMode.telemetry.addData("\tcurrent position Horizontal", liftMotorHorizontal.getCurrentPosition()- GlobalVariables.endAutoLiftHorizontal);
+        opMode.telemetry.addData("\tcurrent position Horizontal", liftMotorHorizontal.getCurrentPosition()).addData("Real horizontal position", getHorizontalPosition());
         resetEncoderButton.setPrevState();
     }
     public void manualTeleop(Controller operator){
@@ -217,11 +217,12 @@ public class Lift extends SubSystem{
         resetEncoderButton.setPrevState();
     }
     public int getHorizontalPosition(){
-       return liftMotorHorizontal.getCurrentPosition();
+       return liftMotorHorizontal.getCurrentPosition() + GlobalVariables.endAutoLiftHorizontal;
     }
     public int getVerticalPosition(){
-        return liftMotorVertical.getCurrentPosition();
+        return liftMotorVertical.getCurrentPosition() + GlobalVariables.endAutoLiftVertical;
     }
+
     public void closeGrabServo(){
         grabServo.setPosition(GRAB_POS);
     }
@@ -231,11 +232,12 @@ public class Lift extends SubSystem{
     public void releaseOnFoundation(){
         grabServo.setPosition(RELEASE_ON_FOUNDATION);
     }
+
     private void manualHorizontalMove(double power){
         currentState = LiftState.MANUAL;
         liftMotorHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         if((resetTouchSensor.getState() && power < 0) ||
-                (liftMotorHorizontal.getCurrentPosition()- GlobalVariables.endAutoLiftHorizontal > LiftPosition.MAX_BOUNDARY.getRangeOut() && power > 0)){
+                (getHorizontalPosition() > LiftPosition.MAX_BOUNDARY.getRangeOut() && power > 0)){
             liftMotorHorizontal.setPower(0);
             return;
         }
@@ -244,13 +246,14 @@ public class Lift extends SubSystem{
     private void manualVerticalMove(double power) {
         currentState = LiftState.MANUAL;
         liftMotorVertical.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        if ((liftMotorVertical.getCurrentPosition()- GlobalVariables.endAutoLiftVertical < LiftPosition.MIN_BOUNDARY.getHeight() && power < 0) ||
-                (liftMotorVertical.getCurrentPosition()- GlobalVariables.endAutoLiftVertical > LiftPosition.MAX_BOUNDARY.getHeight() && power > 0)) {
+        if ((getVerticalPosition() < LiftPosition.MIN_BOUNDARY.getHeight() && power < 0) ||
+                (getVerticalPosition() > LiftPosition.MAX_BOUNDARY.getHeight() && power > 0)) {
             liftMotorVertical.setPower(0);
             return;
         }
         liftMotorVertical.setPower(power);
     }
+
     public void moveLift(LiftPosition position) {
         moveHeight(position);
         moveRangeOut(position);
@@ -264,5 +267,61 @@ public class Lift extends SubSystem{
         liftMotorHorizontal.setTargetPosition(position.getRangeOut() - GlobalVariables.endAutoLiftHorizontal);
         liftMotorHorizontal.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftMotorHorizontal.setPower(POWER);
+    }
+
+    public void moveHeightAuto(LiftPosition target){
+        final double TIME_OUT = 3;
+
+        moveHeight(target);
+
+        double timeToStop = opMode.getRuntime() + TIME_OUT;
+        while (liftMotorVertical.isBusy() && opMode.getRuntime() <= timeToStop){
+            opMode.telemetry.addData("target Vertical ",  liftMotorVertical.getTargetPosition());
+            opMode.telemetry.addData("current position Vertical", liftMotorVertical.getCurrentPosition());
+        }
+
+        liftMotorVertical.setPower(0);
+        liftMotorVertical.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+    public void moveRangeOutAuto(LiftPosition target){
+        final double TIME_OUT = 1;
+
+        moveRangeOut(target);
+
+        double timeToStop = opMode.getRuntime() + TIME_OUT;
+        while (liftMotorHorizontal.isBusy() && opMode.getRuntime() <= timeToStop){
+            opMode.telemetry.addData("target Horizontal ", liftMotorHorizontal.getTargetPosition());
+            opMode.telemetry.addData("current position Horizontal", liftMotorHorizontal.getCurrentPosition());
+        }
+
+        liftMotorHorizontal.setPower(0);
+        liftMotorHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+    public void moveLiftAuto(LiftPosition target){
+        final double TIME_OUT = 3;
+
+        moveLift(target);
+
+        double timeToStop = opMode.getRuntime() + TIME_OUT;
+        while (liftMotorVertical.isBusy() && opMode.getRuntime() <= timeToStop){
+            opMode.telemetry.addData("target Vertical ",  liftMotorVertical.getTargetPosition());
+            opMode.telemetry.addData("current position Vertical", liftMotorVertical.getCurrentPosition());
+            opMode.telemetry.addData("target Horizontal ", liftMotorHorizontal.getTargetPosition());
+            opMode.telemetry.addData("current position Horizontal", liftMotorHorizontal.getCurrentPosition());
+            if(!liftMotorHorizontal.isBusy()){
+                liftMotorHorizontal.setPower(0);
+                liftMotorHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            }
+        }
+        liftMotorVertical.setPower(0);
+        liftMotorVertical.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        while (liftMotorHorizontal.isBusy() && opMode.getRuntime() <= timeToStop){
+            opMode.telemetry.addData("target Vertical ",  liftMotorVertical.getTargetPosition());
+            opMode.telemetry.addData("current position Vertical", liftMotorVertical.getCurrentPosition());
+            opMode.telemetry.addData("target Horizontal ", liftMotorHorizontal.getTargetPosition());
+            opMode.telemetry.addData("current position Horizontal", liftMotorHorizontal.getCurrentPosition());
+        }
+        liftMotorHorizontal.setPower(0);
+        liftMotorHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 }
