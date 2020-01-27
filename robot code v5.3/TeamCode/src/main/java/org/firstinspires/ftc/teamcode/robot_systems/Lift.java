@@ -18,7 +18,7 @@ public class Lift extends SubSystem{
         TAKE_STONE(1, 0), MOVE_OUT_HEIGHT(7,0),
         LEVEL1(0,36), LEVEL2(8,36), LEVEL3(14,36),
         ABOVE_FOUNDATION(6,35), READY_TO_TAKE_STONE(6,0),
-        MAX_BOUNDARY(15, 36), MIN_BOUNDARY(1, 0), RELEASE_INTAKE(3.5,0);
+        MAX_BOUNDARY(15, 36), MIN_BOUNDARY(1, 0), RELEASE_INTAKE(2,0);
 
         private double height;
         private final double tickPerCMVertical = 398.33;
@@ -149,10 +149,10 @@ public class Lift extends SubSystem{
         switch (currentState){
             case TAKE_STONE:
                 //TODO: check how to recognize a stone
-                if (operator.leftTrigger.onClick()){
+                if (operator.leftTrigger.onClick() || operator.rightTrigger.onClick()){
                     moveLift(LiftPosition.READY_TO_TAKE_STONE);
                 }
-                else if (operator.leftTrigger.onRealese()){
+                else if (operator.leftTrigger.onRealese() || operator.rightTrigger.onRealese()){
                     moveLift(LiftPosition.TAKE_STONE);
                 }
                 break;
@@ -276,7 +276,7 @@ public class Lift extends SubSystem{
         moveHeight(target);
 
         double timeToStop = opMode.getRuntime() + TIME_OUT;
-        while (((LinearOpMode)opMode).opModeIsActive() && liftMotorVertical.isBusy() && opMode.getRuntime() <= timeToStop){
+        while (((LinearOpMode)opMode).opModeIsActive() && Math.abs(liftMotorVertical.getTargetPosition() - liftMotorVertical.getCurrentPosition()) >= 100  && opMode.getRuntime() <= timeToStop){
             opMode.telemetry.addData("target Vertical ",  liftMotorVertical.getTargetPosition());
             opMode.telemetry.addData("current position Vertical", liftMotorVertical.getCurrentPosition());
         }
@@ -304,7 +304,7 @@ public class Lift extends SubSystem{
         moveLift(target);
 
         double timeToStop = opMode.getRuntime() + TIME_OUT;
-        while (((LinearOpMode)opMode).opModeIsActive() && liftMotorVertical.isBusy() && opMode.getRuntime() <= timeToStop){
+        while (((LinearOpMode)opMode).opModeIsActive() && Math.abs(liftMotorVertical.getTargetPosition() - liftMotorVertical.getCurrentPosition()) >= 100 && opMode.getRuntime() <= timeToStop){
             opMode.telemetry.addData("target Vertical ",  liftMotorVertical.getTargetPosition());
             opMode.telemetry.addData("current position Vertical", liftMotorVertical.getCurrentPosition());
             opMode.telemetry.addData("target Horizontal ", liftMotorHorizontal.getTargetPosition());
