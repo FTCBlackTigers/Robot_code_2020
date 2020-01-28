@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode.dashboard;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -39,7 +40,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Demonstrates empty OpMode
  */
 @TeleOp(name = "dashboardTest", group = "dashboard")
-//@Disabled
+@Disabled
 public class dashboardTest extends OpMode {
 
   private ElapsedTime runtime = new ElapsedTime();

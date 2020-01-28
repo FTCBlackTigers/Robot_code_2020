@@ -80,15 +80,16 @@ public class BlueFoundationAndStone extends LinearOpMode {
         robot.lift.moveHeight(Lift.LiftPosition.LEVEL2);
         robot.mecanumDrive.driveByEncoder(30, 180, 0.5, 2);
         robot.lift.moveRangeOutAuto(Lift.LiftPosition.LEVEL2);
+        robot.foundationMove.down();
         robot.lift.moveLiftAuto(Lift.LiftPosition.LEVEL1);
         robot.lift.openGrabServo();
-        robot.foundationMove.down();
         sleep(500);
         robot.lift.moveLift(Lift.LiftPosition.TAKE_STONE);
         robot.mecanumDrive.driveByEncoder(100,-60,1,3);
         robot.mecanumDrive.turnByGyroAbsolute(-90,3);
         robot.mecanumDrive.driveByEncoder(50, 180,1,3);
         robot.foundationMove.up();
+        robot.mecanumDrive.driveByEncoder(20,70, 0.5, 2);
         robot.mecanumDrive.driveByEncoder(100,0,1,2);
         robot.endAuto(0);
     }

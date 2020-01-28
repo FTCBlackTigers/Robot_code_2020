@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.prototypes_and_tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.robot_systems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.robot_systems.Robot;
 
 @Autonomous(name = "mecanumTest",group = "")
+@Disabled
 
 public class MecanumDriveLinear extends LinearOpMode {
     MecanumDrive mecanumDrive = new MecanumDrive();

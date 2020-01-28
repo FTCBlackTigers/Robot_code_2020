@@ -18,7 +18,7 @@ public class Lift extends SubSystem{
         TAKE_STONE(1, 0), MOVE_OUT_HEIGHT(7,0),
         LEVEL1(0,36), LEVEL2(8,36), LEVEL3(14,36),
         ABOVE_FOUNDATION(6,35), READY_TO_TAKE_STONE(6,0),
-        MAX_BOUNDARY(15, 36), MIN_BOUNDARY(1, 0), RELEASE_INTAKE(2,0);
+        MAX_BOUNDARY(15, 36), MIN_BOUNDARY(0, 0), RELEASE_INTAKE(2,0);
 
         private double height;
         private final double tickPerCMVertical = 398.33;
@@ -113,7 +113,7 @@ public class Lift extends SubSystem{
             closeGrabServo();
         }
         if(operator.dpadUp.onClick()){
-            if(currentState == LiftState.TAKE_STONE){
+            if(currentState == LiftState.TAKE_STONE || currentState == LiftState.MANUAL){
                 targetLevel = 0;
                 moveHeight(LiftPosition.MOVE_OUT_HEIGHT);
             }
@@ -124,7 +124,7 @@ public class Lift extends SubSystem{
             currentState = LiftState.MOVE_UP;
         }
         if(operator.dpadDown.onClick()){
-            if(currentState == LiftState.TAKE_STONE){
+            if(currentState == LiftState.TAKE_STONE || currentState == LiftState.MANUAL){
                 targetLevel = 0;
                 moveHeight(LiftPosition.MOVE_OUT_HEIGHT);
             }
