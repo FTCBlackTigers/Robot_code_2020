@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.utils.SkystoneDetection;
 
 import java.util.concurrent.Callable;
 
-@Autonomous(name = "RedFoundationAndStone", group ="red")
+@Autonomous(name = "RED foundation And Stone", group ="red")
 
 public class RedFoundationAndStone extends LinearOpMode {
     private Robot robot = new Robot();

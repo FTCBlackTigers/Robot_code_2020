@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.robot_systems.Lift;
 import org.firstinspires.ftc.teamcode.robot_systems.Robot;
 import org.firstinspires.ftc.teamcode.utils.GlobalVariables;
 
-@Autonomous(name = "Red foundation Far", group ="red")
+@Autonomous(name = "RED Foundation Far", group ="red")
 public class FoundationRed extends LinearOpMode {
     private Robot robot = new Robot();
 

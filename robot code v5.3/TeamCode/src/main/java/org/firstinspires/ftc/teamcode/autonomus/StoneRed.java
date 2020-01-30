@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.autonomus;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.robot_systems.Intake;
@@ -9,6 +10,7 @@ import org.firstinspires.ftc.teamcode.robot_systems.Robot;
 import org.firstinspires.ftc.teamcode.utils.GlobalVariables;
 
 @Autonomous(name = "Stone Red", group ="red")
+@Disabled
 public class StoneRed extends LinearOpMode {
     private Robot robot = new Robot();
 
