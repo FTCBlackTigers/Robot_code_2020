@@ -32,10 +32,6 @@ public class RedFoundationAndStone extends LinearOpMode {
         double timeToStop = this.getRuntime() + SkystoneDetection.WAIT_FOR_DETECTION;
         while(skystonePos ==SkystoneDetection.SkystonePos.NONE && timeToStop> getRuntime() && opModeIsActive()){
             skystonePos = skystoneDetection.getSkystonePos();
-            if (skystonePos == SkystoneDetection.SkystonePos.NONE && moveToSkystone == 0) {
-                moveToSkystone = 5;
-                robot.mecanumDrive.driveByEncoder(5,0,0.1,0.5);
-            }
             telemetry.addData("skystone", skystonePos);
             telemetry.update();
         }

@@ -286,6 +286,7 @@ public class MecanumDrive extends SubSystem {
         double timeToStop = this.opMode.getRuntime() + timeoutS;
         double callTime = this.opMode.getRuntime() + delayCallAction;
         final int maxError = 100;
+        boolean called = false;
         boolean frontLeftIsBusy = (Math.abs(frontLeftDrive.getTargetPosition() - frontLeftDrive.getCurrentPosition()) > maxError) && (Math.abs(frontLeftDrive.getPower())>0);
         boolean frontRightIsBusy =(Math.abs(frontRightDrive.getTargetPosition() - frontRightDrive.getCurrentPosition()) > maxError) && (Math.abs(frontRightDrive.getPower())>0);
         boolean backLeftIsBusy = (Math.abs(backLeftDrive.getTargetPosition() - backLeftDrive.getCurrentPosition()) > maxError) && (Math.abs(backLeftDrive.getPower())>0);
@@ -296,6 +297,7 @@ public class MecanumDrive extends SubSystem {
             if(callAction != null && opMode.getRuntime() >= callTime) {
                 try {
                     callAction.call();
+                    called = true;
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -311,6 +313,14 @@ public class MecanumDrive extends SubSystem {
             frontRightIsBusy =(Math.abs(frontRightDrive.getTargetPosition() - frontRightDrive.getCurrentPosition()) > maxError) && (Math.abs(frontRightDrive.getPower()) > 0);
             backLeftIsBusy = (Math.abs(backLeftDrive.getTargetPosition() - backLeftDrive.getCurrentPosition()) > maxError) && (Math.abs(backLeftDrive.getPower()) > 0);
             backRightIsBusy = (Math.abs(backRightDrive.getTargetPosition() - backRightDrive.getCurrentPosition()) > maxError) && (Math.abs(backRightDrive.getPower()) > 0);
+        }
+
+        if(callAction != null && !called) {
+            try {
+                callAction.call();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
 
         // Stop all motion;
