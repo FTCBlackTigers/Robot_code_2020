@@ -20,7 +20,7 @@ public class RedFoundationAndStone extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         SkystoneDetection.SkystonePos skystonePos = SkystoneDetection.SkystonePos.NONE;
         GlobalVariables.reset();
-        skystoneDetection.init(hardwareMap);
+        skystoneDetection.init(hardwareMap, this);
         robot.init(hardwareMap, this);
         while(!isStarted() && !isStopRequested()){
             skystonePos= skystoneDetection.getSkystonePos();

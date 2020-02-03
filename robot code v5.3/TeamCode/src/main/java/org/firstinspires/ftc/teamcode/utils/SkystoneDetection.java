@@ -29,15 +29,12 @@
 
 package org.firstinspires.ftc.teamcode.utils;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
@@ -54,9 +51,10 @@ import java.util.List;
  * is explained below.
  */
 public class SkystoneDetection {
-    public enum SkystonePos{
+    public enum SkystonePos {
         LEFT, CENTER, RIGHT, NONE
     }
+
     public static final double WAIT_FOR_DETECTION = 3;
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
@@ -77,7 +75,6 @@ public class SkystoneDetection {
     private static final String VUFORIA_KEY =
             "AW/F0cP/////AAABmUpR4+dbt0Negw2nqaCH9Cw2gV4ZxuUmpeJMm7XOTdQVumthQcOeoS9qktHy4EvXtMAFoh7n5KeMiLMDqtKvd1TrbYNUy3f9ST3TMkH2hFYKB6oJMJPB8oelL9Bst/2XJBz0ycMMcKmSsIwyOqwOuHamAlwfT+o7VusfYmY7FPvnXuhn8obCeB5x0hhjwjsBuOz2wnx1us6N5y6on0rdc1DOzC2gI767QLVXAvPyJvMfgtZRGcfzFk0evuSVxrIPCRQBjQYK2s5SsBLZ4sEO4HelibKK5kg0lgT9P1uHSNa8SWX+4wpJm76dFw1nSL7YElieByOTXxycmOdhWaae5qb1lvYYmDiBNFiwfHRDkBRD";
 
-
     /**
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
      * localization engine.
@@ -89,7 +86,14 @@ public class SkystoneDetection {
      * Detection engine.
      */
     private TFObjectDetector tfod;
-    public void init(HardwareMap hardwareMap){
+
+    private OpMode opMode;
+
+    private SkystonePos lastPos = SkystonePos.NONE;
+
+    public void init(HardwareMap hardwareMap, OpMode opMode) {
+        this.opMode = opMode;
+
         initVuforia(hardwareMap);
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
             initTfod(hardwareMap);
@@ -98,65 +102,82 @@ public class SkystoneDetection {
             tfod.activate();
         }
     }
+
     public SkystonePos getSkystonePos() {
         if (tfod != null) {
+            opMode.telemetry.addLine("SKYSTONE");
             // getUpdatedRecognitions() will return null if no new information is available since
             // the last time that call was made.
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
             if (updatedRecognitions != null) {
-                //telemetry.addData("# Object Detected", updatedRecognitions.size());
+                opMode.telemetry.addData("\t#Object Detected", updatedRecognitions.size());
                 if (updatedRecognitions.size() == 2) {
-                    if (updatedRecognitions.get(0).getLabel() == LABEL_FIRST_ELEMENT && updatedRecognitions.get(1).getLabel() == LABEL_FIRST_ELEMENT) {
+                    opMode.telemetry.addData("\tfirst label", updatedRecognitions.get(0).getLabel()).addData("second label", updatedRecognitions.get(1).getLabel());
+                    if (updatedRecognitions.get(0).getLabel().equals(LABEL_FIRST_ELEMENT) && updatedRecognitions.get(1).getLabel().equals(LABEL_FIRST_ELEMENT)) {
+                        lastPos = SkystonePos.RIGHT;
                         return SkystonePos.RIGHT;
                     } else {
-                        if (updatedRecognitions.get(0).getLabel() == LABEL_SECOND_ELEMENT) {
+                        if (updatedRecognitions.get(0).getLabel().equals(LABEL_SECOND_ELEMENT)) {
                             if (updatedRecognitions.get(0).getLeft() > updatedRecognitions.get(1).getLeft()) {
+                                lastPos = SkystonePos.CENTER;
                                 return SkystonePos.CENTER;
                             } else {
+                                lastPos = SkystonePos.LEFT;
                                 return SkystonePos.LEFT;
                             }
                         } else {
                             if (updatedRecognitions.get(1).getLeft() > updatedRecognitions.get(0).getLeft()) {
+                                lastPos = SkystonePos.CENTER;
                                 return SkystonePos.CENTER;
                             } else {
+                                lastPos = SkystonePos.LEFT;
                                 return SkystonePos.LEFT;
                             }
                         }
                     }
+                } else {
+                    lastPos = SkystonePos.NONE;
+                    return SkystonePos.NONE;
                 }
             }
         }
-        return SkystonePos.NONE;
+        return lastPos;
     }
 
-/**
- * Initialize the Vuforia localization engine.
- */
-private void initVuforia(HardwareMap hardwareMap) {
-    /*
-     * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
+    /**
+     * Initialize the Vuforia localization engine.
      */
-    VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+    private void initVuforia(HardwareMap hardwareMap) {
+        /*
+         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
+         */
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
-    parameters.vuforiaLicenseKey = VUFORIA_KEY;
-    //  parameters.cameraDirection = CameraDirection.FRONT;
-    parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
+        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+        //  parameters.cameraDirection = CameraDirection.FRONT;
+        parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
 
-    //  Instantiate the Vuforia engine
-    vuforia = ClassFactory.getInstance().createVuforia(parameters);
+        //  Instantiate the Vuforia engine
+        vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
-    // Loading trackables is not necessary for the TensorFlow Object Detection engine.
-}
+        // Loading trackables is not necessary for the TensorFlow Object Detection engine.
+    }
 
-/**
- * Initialize the TensorFlow Object Detection engine.
- */
-private void initTfod(HardwareMap hardwareMap){
-    int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
-        "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-    TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-    tfodParameters.minimumConfidence = 0.8;
-    tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-    tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
-}
+    /**
+     * Initialize the TensorFlow Object Detection engine.
+     */
+    private void initTfod(HardwareMap hardwareMap) {
+        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfodParameters.minimumConfidence = 0.8;
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+    }
+
+    public void shutdown(){
+        if(this.tfod != null) {
+            this.tfod.shutdown();
+        }
+    }
 }
