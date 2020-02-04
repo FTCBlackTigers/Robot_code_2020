@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.utils.GlobalVariables;
 
 public class Lift extends SubSystem{
     public enum LiftPosition{
-        TAKE_STONE(1, 0), MOVE_OUT_HEIGHT(7,0),
+        TAKE_STONE(0, 0), MOVE_OUT_HEIGHT(7,0),
         LEVEL1(0,36), LEVEL2(8,36), LEVEL3(14,36),
         ABOVE_FOUNDATION(6,35), READY_TO_TAKE_STONE(6,0),
         MAX_BOUNDARY(15, 36), MIN_BOUNDARY(0, 0), RELEASE_INTAKE(2,0);
@@ -215,6 +215,7 @@ public class Lift extends SubSystem{
         opMode.telemetry.addData("\tcurrent position Vertical", liftMotorVertical.getCurrentPosition());
         opMode.telemetry.addData("\ttarget Horizontal ", liftMotorHorizontal.getTargetPosition());
         opMode.telemetry.addData("\tcurrent position Horizontal", liftMotorHorizontal.getCurrentPosition());
+        opMode.telemetry.addData("\treset button", resetEncoderButton.isPressed());
         resetEncoderButton.setPrevState();
     }
     public int getHorizontalPosition(){
@@ -271,21 +272,22 @@ public class Lift extends SubSystem{
     }
 
     public void moveHeightAuto(LiftPosition target){
-        final double TIME_OUT = 3;
+        final double TIME_OUT = 2;
 
         moveHeight(target);
 
         double timeToStop = opMode.getRuntime() + TIME_OUT;
-        while (((LinearOpMode)opMode).opModeIsActive() && Math.abs(liftMotorVertical.getTargetPosition() - liftMotorVertical.getCurrentPosition()) >= 100  && opMode.getRuntime() <= timeToStop){
+        while (((LinearOpMode)opMode).opModeIsActive() && Math.abs(liftMotorVertical.getTargetPosition() - liftMotorVertical.getCurrentPosition()) >= 130  && opMode.getRuntime() <= timeToStop){
             opMode.telemetry.addData("target Vertical ",  liftMotorVertical.getTargetPosition());
             opMode.telemetry.addData("current position Vertical", liftMotorVertical.getCurrentPosition());
+            opMode.telemetry.update();
         }
 
         liftMotorVertical.setPower(0);
         liftMotorVertical.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
     public void moveRangeOutAuto(LiftPosition target){
-        final double TIME_OUT = 1;
+        final double TIME_OUT = 1.5;
 
         moveRangeOut(target);
 
@@ -293,22 +295,24 @@ public class Lift extends SubSystem{
         while (((LinearOpMode)opMode).opModeIsActive() && liftMotorHorizontal.isBusy() && opMode.getRuntime() <= timeToStop){
             opMode.telemetry.addData("target Horizontal ", liftMotorHorizontal.getTargetPosition());
             opMode.telemetry.addData("current position Horizontal", liftMotorHorizontal.getCurrentPosition());
+            opMode.telemetry.update();
         }
 
         liftMotorHorizontal.setPower(0);
         liftMotorHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
     public void moveLiftAuto(LiftPosition target){
-        final double TIME_OUT = 3;
+        final double TIME_OUT = 2;
 
         moveLift(target);
 
         double timeToStop = opMode.getRuntime() + TIME_OUT;
-        while (((LinearOpMode)opMode).opModeIsActive() && Math.abs(liftMotorVertical.getTargetPosition() - liftMotorVertical.getCurrentPosition()) >= 100 && opMode.getRuntime() <= timeToStop){
+        while (((LinearOpMode)opMode).opModeIsActive() && Math.abs(liftMotorVertical.getTargetPosition() - liftMotorVertical.getCurrentPosition()) >= 130 && opMode.getRuntime() <= timeToStop){
             opMode.telemetry.addData("target Vertical ",  liftMotorVertical.getTargetPosition());
             opMode.telemetry.addData("current position Vertical", liftMotorVertical.getCurrentPosition());
             opMode.telemetry.addData("target Horizontal ", liftMotorHorizontal.getTargetPosition());
             opMode.telemetry.addData("current position Horizontal", liftMotorHorizontal.getCurrentPosition());
+            opMode.telemetry.update();
             if(!liftMotorHorizontal.isBusy()){
                 liftMotorHorizontal.setPower(0);
                 liftMotorHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -321,6 +325,7 @@ public class Lift extends SubSystem{
             opMode.telemetry.addData("current position Vertical", liftMotorVertical.getCurrentPosition());
             opMode.telemetry.addData("target Horizontal ", liftMotorHorizontal.getTargetPosition());
             opMode.telemetry.addData("current position Horizontal", liftMotorHorizontal.getCurrentPosition());
+            opMode.telemetry.update();
         }
         liftMotorHorizontal.setPower(0);
         liftMotorHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

@@ -28,21 +28,19 @@ public class RedFoundationAndStone extends LinearOpMode {
             telemetry.update();
         }
         robot.lift.moveLift(Lift.LiftPosition.RELEASE_INTAKE);
-        double moveToSkystone = 0;
         double timeToStop = this.getRuntime() + SkystoneDetection.WAIT_FOR_DETECTION;
-        while(skystonePos ==SkystoneDetection.SkystonePos.NONE && timeToStop> getRuntime() && opModeIsActive()){
+        while(skystonePos == SkystoneDetection.SkystonePos.NONE && timeToStop > getRuntime() && opModeIsActive()){
             skystonePos = skystoneDetection.getSkystonePos();
             telemetry.addData("skystone", skystonePos);
             telemetry.update();
         }
-        robot.mecanumDrive.driveByEncoder(15 - moveToSkystone,0,1,1);
-        telemetry.addData("skystone:" ,skystonePos);
-        int skystoneAddDistance = 0;
-        int rightAddDistance = 0;
+        robot.mecanumDrive.driveByEncoder(15,0,1,1);
+        telemetry.addData("skystone:", skystonePos);
+        double skystoneAddDistance = 0;
         switch (skystonePos){
             case NONE:
             case CENTER: //RIGHT
-                robot.mecanumDrive.driveByEncoder(120,55,0.7,3);
+                robot.mecanumDrive.driveByEncoder(130,55,0.7,3);
                 robot.mecanumDrive.turnByGyroAbsolute(30,2);
                 break;
             case LEFT: //CENTER
@@ -52,7 +50,6 @@ public class RedFoundationAndStone extends LinearOpMode {
                 break;
             case RIGHT: // LEFT
                 skystoneAddDistance = 50;
-                rightAddDistance = 15;
                 robot.mecanumDrive.driveByEncoder(45,-10,0.7,3);
                 robot.mecanumDrive.turnByGyroAbsolute(30,2);
                 break;
@@ -76,20 +73,20 @@ public class RedFoundationAndStone extends LinearOpMode {
         },1);
         robot.mecanumDrive.turnByGyroAbsolute(180,2);
         robot.lift.moveHeight(Lift.LiftPosition.LEVEL2);
-        robot.mecanumDrive.driveByEncoder(25, 180, 0.5, 2);
-        robot.lift.moveRangeOutAuto(Lift.LiftPosition.LEVEL2);
+        robot.mecanumDrive.driveByEncoder(35, 180, 0.3, 2);
         robot.foundationMove.down();
+        robot.lift.moveRangeOutAuto(Lift.LiftPosition.LEVEL2);
         robot.lift.moveLiftAuto(Lift.LiftPosition.LEVEL1);
         robot.lift.openGrabServo();
         sleep(500);
         robot.lift.moveLift(Lift.LiftPosition.TAKE_STONE);
-        robot.mecanumDrive.driveByEncoder(40,0,1,3);
+        robot.mecanumDrive.driveByEncoder(45,0,1,3);
         robot.mecanumDrive.turnByGyroAbsolute(90,3);
         robot.mecanumDrive.driveByEncoder(30, 180,1,3);
         robot.foundationMove.up();
         sleep(500);
         robot.mecanumDrive.turnByGyroAbsolute(90, 1);
-        robot.mecanumDrive.driveByEncoder(20, 70, 0.5, 2);
+        robot.mecanumDrive.driveByEncoder(40, 70, 0.5, 2);
         robot.mecanumDrive.driveByEncoder(100,0,1,2);
         robot.endAuto(0);
     }
