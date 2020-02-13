@@ -135,17 +135,21 @@ public class Lift extends SubSystem{
             currentState = LiftState.MOVE_UP;
         }
         if(operator.rightStickY.isPressed()){
-            manualHorizontalMove(operator.rightStickY.getValue());
+            manualHorizontalMove(operator.rightStickY.getValue() * 0.7);
         }
         else if(operator.rightStickY.onRealese()){
           manualHorizontalMove(0);
         }
         if(operator.leftStickY.isPressed()) {
-            manualVerticalMove(operator.leftStickY.getValue());
+            manualVerticalMove(operator.leftStickY.getValue() * 0.7);
         }
         else if(operator.leftStickY.onRealese()){
             manualVerticalMove(0);
         }
+        /*if (operator.leftBumper.isPressed()){
+            endGameVerticalMove(operator.leftStickY.getValue());
+            endGameHorizontalMove(operator.rightStickY.getValue());
+        }*/
         switch (currentState){
             case TAKE_STONE:
                 //TODO: check how to recognize a stone
@@ -186,6 +190,8 @@ public class Lift extends SubSystem{
                 }
                 break;
             case AT_LEVEL:
+                break;
+            default:
                 break;
         }
         opMode.telemetry.addLine("LIFT");
@@ -238,7 +244,7 @@ public class Lift extends SubSystem{
     private void manualHorizontalMove(double power){
         currentState = LiftState.MANUAL;
         liftMotorHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        if((resetTouchSensor.getState() && power < 0) ||
+        if ((getHorizontalPosition() < LiftPosition.MIN_BOUNDARY.getRangeOut() && power < 0) ||
                 (getHorizontalPosition() > LiftPosition.MAX_BOUNDARY.getRangeOut() && power > 0)){
             liftMotorHorizontal.setPower(0);
             return;
@@ -256,6 +262,26 @@ public class Lift extends SubSystem{
         liftMotorVertical.setPower(power);
     }
 
+    /* private void endGameHorizontalMove(double power){
+         currentState = LiftState.MANUAL;
+         liftMotorHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+         if((power < 0) ||
+                 (getHorizontalPosition() > LiftPosition.MAX_BOUNDARY.getRangeOut() && power > 0)){
+             liftMotorHorizontal.setPower(0);
+             return;
+         }
+         liftMotorHorizontal.setPower(power);
+     }
+     private void endGameVerticalMove(double power) {
+         currentState = LiftState.MANUAL;
+         liftMotorVertical.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+         if ((getVerticalPosition() < LiftPosition.MIN_BOUNDARY.getHeight() && power < 0) ||
+                 (power > 0)) {
+             liftMotorVertical.setPower(0);
+             return;
+         }
+         liftMotorVertical.setPower(power);
+     }*/
     public void moveLift(LiftPosition position) {
         moveHeight(position);
         moveRangeOut(position);
