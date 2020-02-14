@@ -16,9 +16,9 @@ import org.firstinspires.ftc.teamcode.utils.GlobalVariables;
 public class Lift extends SubSystem{
     public enum LiftPosition{
         TAKE_STONE(0, 0), MOVE_OUT_HEIGHT(7,0),
-        LEVEL1(0,36), LEVEL2(8,36), LEVEL3(14,36),
+        LEVEL1(0, 36), LEVEL2(8, 36), LEVEL3(14, 36), LEVEL4(19, 36),
         ABOVE_FOUNDATION(6,35), READY_TO_TAKE_STONE(6,0),
-        MAX_BOUNDARY(15, 36), MIN_BOUNDARY(0, 0), RELEASE_INTAKE(2,0);
+        MAX_BOUNDARY(15, 36), MIN_BOUNDARY(0, 0.3), RELEASE_INTAKE(2, 0);
 
         private double height;
         private final double tickPerCMVertical = 398.33;
@@ -53,12 +53,12 @@ public class Lift extends SubSystem{
     private static final double RELEASE_POS = 0.25;
     private static final double RELEASE_ON_FOUNDATION = 0.2;
 
-    private final LiftPosition[] positions = {LiftPosition.LEVEL1, LiftPosition.LEVEL2, LiftPosition.LEVEL3};
+    private final LiftPosition[] positions = {LiftPosition.LEVEL1, LiftPosition.LEVEL2, LiftPosition.LEVEL3, LiftPosition.LEVEL4};
     private int targetLevel = -1;
 
     private LiftState currentState;
     private Button resetEncoderButton = new Button();
-
+    private boolean ignoreBoundary = false;
     @Override
     public void init(HardwareMap hardwareMap, OpMode opMode) {
         this.opMode = opMode;
@@ -94,10 +94,13 @@ public class Lift extends SubSystem{
             currentState = LiftState.TAKE_STONE;
             GlobalVariables.endAutoLiftHorizontal = 0;
         }
+        if (operator.leftBumper.onClick()) {
+            ignoreBoundary = true;
+        }
 
         if(operator.x.onClick()){
             openGrabServo();
-            moveHeight(LiftPosition.TAKE_STONE);
+            moveRangeOut(LiftPosition.TAKE_STONE);
             targetLevel = -1;
             currentState = LiftState.GOING_TO_TAKE_STONE;
         }
@@ -161,7 +164,7 @@ public class Lift extends SubSystem{
                 }
                 break;
             case GOING_TO_TAKE_STONE:
-                if (getVerticalPosition() < LiftPosition.LEVEL2.getHeight()) {
+                if (getHorizontalPosition() < LiftPosition.TAKE_STONE.getRangeOut()) {
                     moveLift(LiftPosition.TAKE_STONE);
                     currentState = LiftState.TAKE_STONE;
                 }
@@ -200,6 +203,7 @@ public class Lift extends SubSystem{
         opMode.telemetry.addData("\tcurrent position Vertical", liftMotorVertical.getCurrentPosition()).addData("Real vertical position", getVerticalPosition());
         opMode.telemetry.addData("\ttarget Horizontal ", liftMotorHorizontal.getTargetPosition());
         opMode.telemetry.addData("\tcurrent position Horizontal", liftMotorHorizontal.getCurrentPosition()).addData("Real horizontal position", getHorizontalPosition());
+        opMode.telemetry.addData("ignoreBoundray:", ignoreBoundary);
         resetEncoderButton.setPrevState();
     }
     public void manualTeleop(Controller operator){
@@ -244,20 +248,25 @@ public class Lift extends SubSystem{
     private void manualHorizontalMove(double power){
         currentState = LiftState.MANUAL;
         liftMotorHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        if ((getHorizontalPosition() < LiftPosition.MIN_BOUNDARY.getRangeOut() && power < 0) ||
+        if (!ignoreBoundary) {
+            if ((getHorizontalPosition() < LiftPosition.MIN_BOUNDARY.getRangeOut() && power < 0) ||
                 (getHorizontalPosition() > LiftPosition.MAX_BOUNDARY.getRangeOut() && power > 0)){
-            liftMotorHorizontal.setPower(0);
-            return;
+                liftMotorHorizontal.setPower(0);
+                return;
+            }
         }
         liftMotorHorizontal.setPower(power);
     }
+
     private void manualVerticalMove(double power) {
         currentState = LiftState.MANUAL;
         liftMotorVertical.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        if ((getVerticalPosition() < LiftPosition.MIN_BOUNDARY.getHeight() && power < 0) ||
-                (getVerticalPosition() > LiftPosition.MAX_BOUNDARY.getHeight() && power > 0)) {
-            liftMotorVertical.setPower(0);
-            return;
+        if (!ignoreBoundary) {
+            if ((getVerticalPosition() < LiftPosition.MIN_BOUNDARY.getHeight() && power < 0) ||
+                    (getVerticalPosition() > LiftPosition.MAX_BOUNDARY.getHeight() && power > 0)) {
+                liftMotorVertical.setPower(0);
+                return;
+            }
         }
         liftMotorVertical.setPower(power);
     }

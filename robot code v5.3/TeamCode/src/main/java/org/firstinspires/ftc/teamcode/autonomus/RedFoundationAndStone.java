@@ -40,12 +40,14 @@ public class RedFoundationAndStone extends LinearOpMode {
         switch (skystonePos){
             case NONE:
             case CENTER: //RIGHT
-                robot.mecanumDrive.driveByEncoder(130,55,0.7,3);
+                robot.mecanumDrive.driveByEncoder(50, 90, 0.5, 3);
+                robot.mecanumDrive.driveByEncoder(40, 0, 0.5, 3);
                 robot.mecanumDrive.turnByGyroAbsolute(30,2);
                 break;
             case LEFT: //CENTER
                 skystoneAddDistance = 25;
-                robot.mecanumDrive.driveByEncoder(85,40,0.7,2);
+                robot.mecanumDrive.driveByEncoder(20, 90, 0.5, 3);
+                robot.mecanumDrive.driveByEncoder(40, 0, 0.5, 3);
                 robot.mecanumDrive.turnByGyroAbsolute(30,2);
                 break;
             case RIGHT: // LEFT
@@ -56,10 +58,10 @@ public class RedFoundationAndStone extends LinearOpMode {
         }
         robot.lift.moveLift(Lift.LiftPosition.READY_TO_TAKE_STONE);
         robot.intake.take();
-        robot.mecanumDrive.driveByEncoder(40,0,0.3,2);
-        robot.mecanumDrive.turnByGyroRelative(5,1);
-        robot.mecanumDrive.turnByGyroRelative(-5,1);
-        robot.mecanumDrive.driveByEncoder(30,180,1,2);
+        robot.mecanumDrive.driveByEncoder(35, 0, 0.3, 2);
+        // robot.mecanumDrive.turnByGyroRelative(5,1);
+        //robot.mecanumDrive.turnByGyroRelative(-5,1);
+        robot.mecanumDrive.driveByEncoder(25, 180, 1, 2);
         sleep(500);
         robot.lift.moveLift(Lift.LiftPosition.TAKE_STONE);
         robot.mecanumDrive.turnByGyroAbsolute(90,5);
