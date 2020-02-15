@@ -41,15 +41,17 @@ public class StoneRed extends LinearOpMode {
         switch (skystonePos) {
             case NONE:
             case CENTER: //RIGHT
-                robot.mecanumDrive.driveByEncoder(120, 55, 0.7, 3);
+                robot.mecanumDrive.driveByEncoder(50, 90, 0.5, 3);
+                robot.mecanumDrive.driveByEncoder(40, 0, 0.5, 3);
                 break;
             case LEFT: //CENTER
                 skystoneAddDistance = 25;
-                robot.mecanumDrive.driveByEncoder(85, 40, 0.7, 2);
+                robot.mecanumDrive.driveByEncoder(20, 90, 0.5, 3);
+                robot.mecanumDrive.driveByEncoder(40, 0, 0.5, 3);
                 break;
             case RIGHT: // LEFT
                 skystoneAddDistance = 50;
-                robot.mecanumDrive.driveByEncoder(40, -10, 0.7, 3);
+                robot.mecanumDrive.driveByEncoder(45, -10, 0.7, 3);
                 break;
         }
         robot.mecanumDrive.turnByGyroAbsolute(30, 2);

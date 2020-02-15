@@ -51,7 +51,7 @@ public class Lift extends SubSystem {
 
     private static final double VERTICAL_POWER = 1;
     private static final double HORIZONTAL_POWER = 1;
-    private static final double GRAB_POS = 0;
+    private static final double GRAB_POS = 0.1;
     private static final double RELEASE_POS = 0.25;
     private static final double RELEASE_ON_FOUNDATION = 0.2;
 
@@ -158,7 +158,7 @@ public class Lift extends SubSystem {
                 }
                 break;
             case GOING_TO_TAKE_STONE:
-                if (getHorizontalPosition() < LiftPosition.TAKE_STONE.getRangeOut()) {
+                if (getHorizontalPosition() <= LiftPosition.MIN_BOUNDARY.getRangeOut() + 300) {
                     moveLift(LiftPosition.TAKE_STONE);
                     currentState = LiftState.TAKE_STONE;
                 }
