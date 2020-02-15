@@ -10,11 +10,16 @@ import org.firstinspires.ftc.teamcode.robot_systems.Robot;
 public class TheTeleop extends OpMode {
     private Robot robot = new Robot();
     private Controller driver = new Controller();
-    private Controller operator= new Controller();
+    private Controller operator = new Controller();
 
     @Override
     public void init() {
         robot.init(hardwareMap, this);
+    }
+
+    @Override
+    public void start() {
+        resetStartTime();
     }
 
     @Override

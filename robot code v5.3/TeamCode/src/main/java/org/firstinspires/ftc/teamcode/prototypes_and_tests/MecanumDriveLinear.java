@@ -11,8 +11,8 @@ import org.firstinspires.ftc.teamcode.robot_systems.Robot;
 @Disabled
 
 public class MecanumDriveLinear extends LinearOpMode {
-    MecanumDrive mecanumDrive = new MecanumDrive();
-    Robot robot = new Robot();
+    private MecanumDrive mecanumDrive = new MecanumDrive();
+    private Robot robot = new Robot();
     @Override
     public void runOpMode() throws InterruptedException {
         mecanumDrive.init(hardwareMap , this);

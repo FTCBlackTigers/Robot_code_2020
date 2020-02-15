@@ -28,9 +28,7 @@
  */
 
 package org.firstinspires.ftc.teamcode.prototypes_and_tests;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -41,7 +39,7 @@ import java.util.Locale;
 
 @TeleOp(name = "Sensor: REVColorDistance", group = "Sensor")
 @Disabled
-public class distance extends OpMode {
+public class Distance extends OpMode {
     DistanceSensor sensorDistance = null;
     @Override
     public void init() {

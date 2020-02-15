@@ -69,7 +69,7 @@ public class Intake extends SubSystem {
         } else if (driver.rightBumper.isPressed()) {
             collectStone();
         }
-        if (driver.rightBumper.onRealese() || driver.leftBumper.onRealese()) {
+        if (driver.rightBumper.onRelease() || driver.leftBumper.onRelease()) {
             getReadyToCollect();
         }*/
         if(operator.leftBumper.onClick()){
@@ -81,7 +81,7 @@ public class Intake extends SubSystem {
                moveRamp(RampAngle.ANGLE_UP);
             }
         }
-        else if (operator.leftBumper.onRealese()){
+        else if (operator.leftBumper.onRelease()){
             moveRamp(RampAngle.UNDER_BRIDGE);
             getReadyToCollect();
         }

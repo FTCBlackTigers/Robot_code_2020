@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.robot_systems.MecanumDrive;
 @TeleOp(name = "mecanum drive", group = "teleop")
 @Disabled
 public class MecanumTeleop extends OpMode {
-    private ElapsedTime runtime = new ElapsedTime();
+
     private Controller driver = new Controller();
     private Controller operator = new Controller();
     private MecanumDrive mecanumDrive = new MecanumDrive();
@@ -24,14 +24,14 @@ public class MecanumTeleop extends OpMode {
 
     @Override
     public void start() {
-        runtime.reset();
+        resetStartTime();
     }
 
     @Override
     public void loop() {
         driver.setValues(gamepad1);
         operator.setValues(gamepad2);
-        mecanumDrive.teleopMotion(driver , operator);
+        mecanumDrive.teleopMotion(driver, operator);
         driver.setPrevValues();
         operator.setPrevValues();
     }
