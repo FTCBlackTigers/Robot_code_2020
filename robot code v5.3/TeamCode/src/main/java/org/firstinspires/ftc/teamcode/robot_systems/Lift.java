@@ -276,13 +276,21 @@ public class Lift extends SubSystem {
     }
 
     public void moveHeight(LiftPosition position) {
+<<<<<<< HEAD
         liftMotorVertical.setTargetPosition(position.getHeight());// - GlobalVariables.endAutoLiftVertical);
+=======
+        liftMotorVertical.setTargetPosition(position.getHeight() - GlobalVariables.endAutoLiftVertical);
+>>>>>>> cd8d6b8e4e05562a1ee6c5f73e48708424bfd81b
         liftMotorVertical.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftMotorVertical.setPower(Math.abs(VERTICAL_POWER));
     }
 
     public void moveRangeOut(LiftPosition position) {
+<<<<<<< HEAD
         liftMotorHorizontal.setTargetPosition(position.getRangeOut());// - GlobalVariables.endAutoLiftHorizontal);
+=======
+        liftMotorHorizontal.setTargetPosition(position.getRangeOut() - GlobalVariables.endAutoLiftHorizontal);
+>>>>>>> cd8d6b8e4e05562a1ee6c5f73e48708424bfd81b
         liftMotorHorizontal.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftMotorHorizontal.setPower(HORIZONTAL_POWER);
     }
