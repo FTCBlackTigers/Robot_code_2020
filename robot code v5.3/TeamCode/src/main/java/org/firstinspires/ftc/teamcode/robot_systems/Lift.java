@@ -19,7 +19,7 @@ public class Lift extends SubSystem {
         MIN_BOUNDARY(0, 0.3), MAX_BOUNDARY(15, 36),
         TAKE_STONE(0, 0), READY_TO_TAKE_STONE(6, 0),
         LEVEL1(0, 36), LEVEL2(8, 36), LEVEL3(14, 36), LEVEL4(19, 36),
-        RELEASE_INTAKE(2, 0), ABOVE_FOUNDATION(6, 35), MOVE_OUT_HEIGHT(7, 0);
+        RELEASE_INTAKE(2, 0), ABOVE_FOUNDATION(5, 35), MOVE_OUT_HEIGHT(9, 0);
 
         private double height;
         private final double tickPerCMVertical = 398.33;

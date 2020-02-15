@@ -60,7 +60,7 @@ public class BlueFoundationAndStone extends LinearOpMode {
         robot.mecanumDrive.driveByEncoder(30, 180, 1, 2);
         sleep(500);
         robot.lift.moveLift(Lift.LiftPosition.TAKE_STONE);
-        robot.mecanumDrive.turnByGyroAbsolute(-91.5, 5);
+        robot.mecanumDrive.turnByGyroAbsolute(-92, 5);
         robot.mecanumDrive.driveByEncoder(162 + skystoneAddDistance, 180, 0.8, 10, new Callable() {
             @Override
             public Object call() throws Exception {
@@ -72,6 +72,7 @@ public class BlueFoundationAndStone extends LinearOpMode {
         robot.mecanumDrive.turnByGyroAbsolute(180, 2);
         robot.lift.moveHeight(Lift.LiftPosition.LEVEL2);
         robot.mecanumDrive.driveByEncoder(30, 180, 0.5, 2);
+        robot.mecanumDrive.driveByEncoder(10, 180, 0.1, 2);
         robot.foundationMove.down();
         robot.lift.moveRangeOutAuto(Lift.LiftPosition.LEVEL2);
         robot.lift.moveLiftAuto(Lift.LiftPosition.LEVEL1);
