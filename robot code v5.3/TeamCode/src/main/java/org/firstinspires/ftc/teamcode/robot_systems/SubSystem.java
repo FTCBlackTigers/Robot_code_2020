@@ -9,5 +9,6 @@ public abstract class SubSystem {
     protected OpMode opMode;
 
     public abstract void init(HardwareMap hardwareMap, OpMode opMode);
+
     public abstract void teleopMotion(Controller driver, Controller operator);
 }

@@ -90,7 +90,7 @@ public class ControllerTest extends OpMode {
       telemetry.addData("a click", "has clicked in " + runtime.toString());
     }
 
-    if(driver.a.onRealese()){
+    if(driver.a.onRelease()){
       telemetry.addData("a release", "has released in " + runtime.toString());
     }
 

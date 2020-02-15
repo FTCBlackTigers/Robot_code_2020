@@ -21,17 +21,19 @@ public class FoundationMove extends SubSystem {
     }
 
     @Override
-    public void teleopMotion(Controller driver, Controller operator){
-        if(driver.y.onClick()){
+    public void teleopMotion(Controller driver, Controller operator) {
+        if (driver.y.onClick()) {
             up();
         }
-        if(driver.x.onClick()) {
+        if (driver.x.onClick()) {
             down();
         }
     }
+
     public void up() {
         foundServo.setPosition(UP_POS);
     }
+
     public void down() {
         foundServo.setPosition(DOWN_POS);
     }

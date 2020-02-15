@@ -25,7 +25,7 @@ public class Button {
         return this.state && !this.prevState;
     }
 
-    public boolean onRealese(){
+    public boolean onRelease(){
         return !this.state && this.prevState;
     }
 }

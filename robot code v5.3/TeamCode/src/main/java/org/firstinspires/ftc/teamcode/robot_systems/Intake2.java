@@ -6,12 +6,12 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.controller.Controller;
-import org.firstinspires.ftc.teamcode.robot_systems.SubSystem;
 
 public class Intake2 extends SubSystem {
-   private DcMotor leftMotor;
-   private DcMotor rightMotor;
-   private static final double POWER = 1;
+    private DcMotor leftMotor;
+    private DcMotor rightMotor;
+    private static final double POWER = 1;
+
     @Override
     public void init(HardwareMap hardwareMap, OpMode opMode) {
         this.opMode = opMode;
@@ -25,25 +25,26 @@ public class Intake2 extends SubSystem {
 
     @Override
     public void teleopMotion(Controller driver, Controller operator) {
-        if (operator.leftTrigger.isPressed()){
+        if (operator.leftTrigger.isPressed()) {
             take();
-        }
-        else if (operator.rightTrigger.isPressed()){
+        } else if (operator.rightTrigger.isPressed()) {
             reverse();
-        }
-        else{
+        } else {
             stop();
         }
     }
-    public void take(){
+
+    public void take() {
         leftMotor.setPower(POWER);
         rightMotor.setPower(POWER);
     }
-    public void reverse(){
+
+    public void reverse() {
         leftMotor.setPower(-POWER);
         rightMotor.setPower(-POWER);
     }
-    public void stop(){
+
+    public void stop() {
         leftMotor.setPower(0);
         rightMotor.setPower(0);
     }

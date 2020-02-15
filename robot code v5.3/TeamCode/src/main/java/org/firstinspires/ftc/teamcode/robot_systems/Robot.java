@@ -12,19 +12,21 @@ public class Robot {
     public FoundationMove foundationMove = new FoundationMove();
     public Lift lift = new Lift();
 
-    public void init(HardwareMap hardwareMap , OpMode opMode){
-        mecanumDrive.init(hardwareMap , opMode);
-        intake.init(hardwareMap , opMode);
-        foundationMove.init(hardwareMap , opMode);
-        lift.init(hardwareMap,opMode);
+    public void init(HardwareMap hardwareMap, OpMode opMode) {
+        mecanumDrive.init(hardwareMap, opMode);
+        intake.init(hardwareMap, opMode);
+        foundationMove.init(hardwareMap, opMode);
+        lift.init(hardwareMap, opMode);
     }
-    public void teleop(Controller driver , Controller operator){
+
+    public void teleop(Controller driver, Controller operator) {
         mecanumDrive.teleopMotion(driver, operator);
         intake.teleopMotion(driver, operator);
         foundationMove.teleopMotion(driver, operator);
         lift.teleopMotion(driver, operator);
     }
-    public void endAuto(double startAngle){
+
+    public void endAuto(double startAngle) {
         GlobalVariables.setEndAutoRobotAngle(mecanumDrive.getAngle() + startAngle);
         GlobalVariables.endAutoLiftHorizontal = lift.getHorizontalPosition();
         GlobalVariables.endAutoLiftVertical = lift.getVerticalPosition();
