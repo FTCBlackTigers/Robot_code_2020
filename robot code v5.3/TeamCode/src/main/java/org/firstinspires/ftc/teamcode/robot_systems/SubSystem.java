@@ -5,6 +5,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.controller.Controller;
 
+/**
+ * This class represents the subsystems that make the robot and contains must have method of each subsystem.
+ */
 public abstract class SubSystem {
     protected OpMode opMode;
 

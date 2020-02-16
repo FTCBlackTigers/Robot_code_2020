@@ -11,7 +11,6 @@ import org.firstinspires.ftc.teamcode.utils.SkystoneDetection;
 import java.util.concurrent.Callable;
 
 @Autonomous(name = "BLUE foundation And Stone", group ="blue")
-
 public class BlueFoundationAndStone extends LinearOpMode {
     private Robot robot = new Robot();
     private SkystoneDetection skystoneDetection = new SkystoneDetection();
