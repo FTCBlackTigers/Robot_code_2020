@@ -103,27 +103,27 @@ public class SkystoneDetection {
             if (updatedRecognitions != null) {
                 opMode.telemetry.addData("\t#Object Detected", updatedRecognitions.size());
                 if (updatedRecognitions.size() == 2) {
-                    opMode.telemetry.addData("\tfirst label", updatedRecognitions.get(0).getLabel()).addData("second label", updatedRecognitions.get(1).getLabel());
-                    if (updatedRecognitions.get(0).getLabel().equals(LABEL_FIRST_ELEMENT) && updatedRecognitions.get(1).getLabel().equals(LABEL_FIRST_ELEMENT)) {
-                        lastPos = SkystonePos.RIGHT;
-                        return SkystonePos.RIGHT;
-                    } else {
-                        if (updatedRecognitions.get(0).getLabel().equals(LABEL_SECOND_ELEMENT)) {
-                            if (updatedRecognitions.get(0).getLeft() > updatedRecognitions.get(1).getLeft()) {
-                                lastPos = SkystonePos.CENTER;
-                                return SkystonePos.CENTER;
-                            } else {
-                                lastPos = SkystonePos.LEFT;
-                                return SkystonePos.LEFT;
-                            }
+                    double skystoneLeft = -1;
+                    double stoneLeft = -1;
+                    for (Recognition recognition : updatedRecognitions) {
+                        if (recognition.getLabel().equals(LABEL_SECOND_ELEMENT)) {
+                            skystoneLeft = recognition.getLeft();
+                        } else if (stoneLeft == -1) {
+                            stoneLeft = recognition.getLeft();
                         } else {
-                            if (updatedRecognitions.get(1).getLeft() > updatedRecognitions.get(0).getLeft()) {
-                                lastPos = SkystonePos.CENTER;
-                                return SkystonePos.CENTER;
-                            } else {
-                                lastPos = SkystonePos.LEFT;
-                                return SkystonePos.LEFT;
-                            }
+                            lastPos = SkystonePos.RIGHT;
+                            return SkystonePos.RIGHT;
+                        }
+                    }
+                    opMode.telemetry.addData("Skystone Left", skystoneLeft + ",stone left", stoneLeft);
+                    opMode.telemetry.update();
+                    if (skystoneLeft != -1 && stoneLeft != -1) {
+                        if (skystoneLeft > stoneLeft) {
+                            lastPos = SkystonePos.CENTER;
+                            return SkystonePos.CENTER;
+                        } else {
+                            lastPos = SkystonePos.LEFT;
+                            return SkystonePos.LEFT;
                         }
                     }
                 } else {

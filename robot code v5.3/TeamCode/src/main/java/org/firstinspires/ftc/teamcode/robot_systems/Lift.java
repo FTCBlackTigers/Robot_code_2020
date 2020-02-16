@@ -16,10 +16,10 @@ import org.firstinspires.ftc.teamcode.utils.GlobalVariables;
 
 public class Lift extends SubSystem {
     public enum LiftPosition {
-        MIN_BOUNDARY(0, 0.3), MAX_BOUNDARY(15, 36),
+        MIN_BOUNDARY(0, 0.3), MAX_BOUNDARY(20, 36),
         TAKE_STONE(0, 0), READY_TO_TAKE_STONE(6, 0),
         LEVEL1(0, 36), LEVEL2(8, 36), LEVEL3(14, 36), LEVEL4(19, 36),
-        RELEASE_INTAKE(2, 0), ABOVE_FOUNDATION(5, 35), MOVE_OUT_HEIGHT(9, 0);
+        RELEASE_INTAKE(2, 0), ABOVE_FOUNDATION(4, 35), MOVE_OUT_HEIGHT(6, 0);
 
         private double height;
         private final double tickPerCMVertical = 398.33;
@@ -41,7 +41,7 @@ public class Lift extends SubSystem {
     }
 
     public enum LiftState {
-        TAKE_STONE, GOING_TO_TAKE_STONE, MOVE_UP, MOVE_OUT, MOVE_TO_LEVEL, AT_LEVEL, MANUAL
+        TAKE_STONE, GOING_TO_TAKE_STONE, MOVE_UP, CONTINUE_MOVE_UP, MOVE_OUT, MOVE_TO_LEVEL, AT_LEVEL, MANUAL
     }
 
     private DcMotor liftMotorVertical;
@@ -164,10 +164,19 @@ public class Lift extends SubSystem {
                 }
                 break;
             case MOVE_UP:
-                if (getVerticalPosition() >= LiftPosition.ABOVE_FOUNDATION.getHeight() ||
+                if (positions[targetLevel].getHeight() >= LiftPosition.ABOVE_FOUNDATION.getHeight()) {
+                    moveHeight(positions[targetLevel]);
+                    currentState = LiftState.CONTINUE_MOVE_UP;
+                } else if (getVerticalPosition() >= LiftPosition.ABOVE_FOUNDATION.getHeight() ||
                         getHorizontalPosition() >= LiftPosition.ABOVE_FOUNDATION.getRangeOut()) {
                     currentState = LiftState.MOVE_OUT;
                     moveRangeOut(positions[targetLevel]);
+                }
+                break;
+            case CONTINUE_MOVE_UP:
+                if (Math.abs(liftMotorVertical.getTargetPosition() - liftMotorVertical.getCurrentPosition()) < 200) {
+                    moveLift(positions[targetLevel]);
+                    currentState = LiftState.MOVE_TO_LEVEL;
                 }
                 break;
             case MOVE_OUT:
